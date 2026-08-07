@@ -1,4 +1,3 @@
-
     const CACHE_KEY = 'givat_haroe_schedule_v1';
     const toM = t => { const [h, m] = t.split(':').map(Number); return h * 60 + m; };
     const frM = m => `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`;
@@ -15,18 +14,19 @@
       'fix-shacharit-s': '08:30', 'fix-shacharit-w': '08:00',
       'fix-yeladim-s': '10:00', 'fix-yeladim-w': '09:30',
       'fix-gdola-s': '13:15', 'fix-gdola-w': '12:30',
+      'fix-nashim': '17:00',
       'off-chlimud': 60, 'off-oneg': 35, 'off-horim': 20,
       'fix-wk-shach': '06:20', 'fix-wk-fri': '06:30', 'fix-wk-arvit': '20:15',
       'lbl-shir': 'שיר השירים', 'lbl-kabbalat': 'מנחה וקבלת שבת', 'lbl-shki': 'שקיעה',
       'lbl-chavura': 'חבורא בעין איה', 'lbl-shacharit': 'שחרית', 'lbl-yeladim': 'תפילת ילדים',
-      'lbl-gdola': 'מנחה גדולה', 'lbl-chlimud': 'חבורת לימוד פרשת שבוע',
+      'lbl-gdola': 'מנחה גדולה', 'lbl-nashim': 'שיעור לנשים', 'lbl-chlimud': 'חבורת לימוד פרשת שבוע',
       'lbl-oneg': 'עונג שבת לילדים', 'lbl-horim': 'לימוד הורים וילדים'
     };
 
     const ALL_ROWS = [
       ['row-shir', 'show-shir'], ['row-kabbalat', 'show-kabbalat'], ['row-shki', 'show-shki'],
       ['row-chavura', 'show-chavura'], ['row-shacharit', 'show-shacharit'], ['row-yeladim', 'show-yeladim'],
-      ['row-gdola', 'show-gdola'], ['row-chlimud', 'show-chlimud'], ['row-oneg', 'show-oneg'],
+      ['row-gdola', 'show-gdola'], ['row-nashim', 'show-nashim'], ['row-chlimud', 'show-chlimud'], ['row-oneg', 'show-oneg'],
       ['row-livui', 'show-livui'], ['row-horim', 'show-horim'], ['row-mincha-sunset', 'show-mincha-sunset'],
       ['row-wk-shach', 'show-wk-shach'], ['row-wk-arvit', 'show-wk-arvit']
     ];
@@ -45,7 +45,6 @@
 
     function saveToCache() {
       const data = {};
-      // Save all inputs and selects
       document.querySelectorAll('input:not([type="radio"]), select, input[type="radio"]:checked').forEach(el => {
         if (el.type === 'checkbox') data[el.id] = el.checked;
         else if (el.type === 'radio') data[el.name] = el.value;
@@ -64,12 +63,10 @@
           if (el.type === 'checkbox') el.checked = data[id];
           else el.value = data[id];
         } else {
-          // Check for radio buttons by name
           const radio = document.querySelector(`input[name="${id}"][value="${data[id]}"]`);
           if (radio) radio.checked = true;
         }
       });
-      // Sync row UI
       ALL_ROWS.forEach(([r, c]) => {
         const el = document.getElementById(c);
         if (el) document.getElementById(r)?.classList.toggle('disabled', !el.checked);
@@ -100,7 +97,7 @@
       if (o && o.value) {
         const candleTime = o.dataset.c;
         const candleM = toM(candleTime);
-        const sunSetM = candleM + 30; // Sunset is 30 minutes after candle lighting
+        const sunSetM = candleM + 30;
         const minchaMinutesBeforeSunset = parseInt(val('mincha-minutes-before-sunset'));
         const roundedM = Math.round((sunSetM - minchaMinutesBeforeSunset) / 5) * 5;
         document.getElementById('mincha-week').value = frM(roundedM);
@@ -140,6 +137,7 @@
       const yeladimM = toM(shacharit) + 90;
       const yeladim = frM(yeladimM);
       const gdola = kayitz ? val('fix-gdola-s') : val('fix-gdola-w');
+      const nashim = val('fix-nashim');
 
       const arvitBaseM = toM(h);
       let arvitM = arvitBaseM + arvitOffset;
@@ -166,6 +164,7 @@
       L.push('');
       if (chk('show-gdola')) L.push(`*${val('lbl-gdola')} - ${gdola}*`);
       L.push('');
+      if (chk('show-nashim')) L.push(`* ${val('lbl-nashim')} - ${nashim}`);
       if (chk('show-chlimud')) L.push(`* ${val('lbl-chlimud')} - ${frM(chLimudM)}`);
       if (chk('show-oneg')) {
         const livui = chk('show-livui') ? ' *(בליווי הורה/מבוגר)*' : '';
