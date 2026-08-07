@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>לו"ז שבת – גבעת הרואה</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@300;400;500;700;900&family=Heebo:wght@300;400;500&display=swap"
+    rel="stylesheet">
+
+
+
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
+
+
+
+
+  <style>
+    :root {
+      --bg: #f7f3ec;
+      --card: #fffdf8;
+      --gold: #b8860b;
+      --gold-light: #d4a017;
+      --gold-pale: #f5ecd4;
+      --ink: #1a1408;
+      --ink-soft: #8a7a5a;
+      --border: #e0d4b0;
+      --shadow: rgba(90, 70, 20, 0.12);
+      --green: #2d6a4f;
+      --red: #8b1a1a;
+      --red-bg: #fdecea;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: var(--bg);
+      background-image: radial-gradient(ellipse at 20% 10%, rgba(184, 134, 11, 0.07) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 90%, rgba(184, 134, 11, 0.05) 0%, transparent 50%);
+      min-height: 100vh;
+      font-family: 'Heebo', sans-serif;
+      color: var(--ink);
+      padding: 20px 20px 60px;
+    }
+
+    .page-wrap {
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    .site-header {
+      text-align: center;
+      padding: 28px 0 18px;
+    }
+
+    .site-header .yishuv {
+      font-family: 'Frank Ruhl Libre', serif;
+      font-size: 12px;
+      letter-spacing: 4px;
+      color: var(--ink-soft);
+      margin-bottom: 5px;
+    }
+
+    .site-header h1 {
+      font-family: 'Frank Ruhl Libre', serif;
+      font-size: 26px;
+      font-weight: 700;
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin: 12px 0;
+      color: var(--gold);
+      font-size: 16px;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      max-width: 100px;
+      background: linear-gradient(to left, transparent, var(--gold));
+    }
+
+    .divider::after {
+      background: linear-gradient(to right, transparent, var(--gold));
+    }
+
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 22px 24px;
+      margin-bottom: 18px;
+      box-shadow: 0 4px 20px var(--shadow);
+    }
+
+    .panel-title {
+      font-family: 'Frank Ruhl Libre', serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .settings-toggle {
+      width: 100%;
+      background: var(--card);
+      border: 1.5px dashed var(--border);
+      border-radius: 12px;
+      padding: 13px 18px;
+      font-family: 'Heebo', sans-serif;
+      font-size: 14px;
+      color: var(--ink-soft);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .settings-toggle:hover {
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+
+    .settings-toggle .arrow {
+      transition: transform 0.25s;
+    }
+
+    .settings-toggle.open .arrow {
+      transform: rotate(180deg);
+    }
+
+    .tmpl-section {
+      margin-bottom: 20px;
+    }
+
+    .tmpl-section-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      color: var(--ink-soft);
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tmpl-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      margin-bottom: 6px;
+      background: var(--bg);
+      border: 1px solid transparent;
+      transition: border-color 0.15s;
+    }
+
+    .tmpl-row:hover {
+      border-color: var(--border);
+    }
+
+    .tmpl-row.disabled {
+      opacity: 0.4;
+    }
+
+    .tmpl-row.sub {
+      margin-right: 28px;
+      background: #edeae3;
+    }
+
+    .tmpl-check {
+      width: 17px;
+      height: 17px;
+      accent-color: var(--gold);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .tmpl-label {
+      flex: 1;
+      min-width: 0;
+      font-size: 13px;
+    }
+
+    .tmpl-label input[type="text"] {
+      width: 100%;
+      background: transparent;
+      border: none;
+      border-bottom: 1px dashed transparent;
+      font-family: 'Heebo', sans-serif;
+      font-size: 13px;
+      color: var(--ink);
+      outline: none;
+      transition: border-color 0.2s;
+      padding: 1px 2px;
+    }
+
+    .tmpl-label input[type="text"]:focus {
+      border-bottom-color: var(--gold);
+    }
+
+    .tmpl-label .sub-desc {
+      font-size: 12px;
+      color: var(--ink-soft);
+    }
+
+    .tmpl-ctrl {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      flex-shrink: 0;
+    }
+
+    .tmpl-ctrl .badge {
+      font-size: 10px;
+      color: var(--ink-soft);
+      background: var(--gold-pale);
+      padding: 2px 6px;
+      border-radius: 4px;
+      white-space: nowrap;
+    }
+
+    .tmpl-ctrl input[type="time"],
+    .tmpl-ctrl input[type="number"],
+    .tmpl-ctrl select {
+      background: var(--bg);
+      border: 1.5px solid var(--border);
+      border-radius: 6px;
+      padding: 4px 7px;
+      font-family: 'Heebo', sans-serif;
+      font-size: 12px;
+      color: var(--ink);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .tmpl-ctrl input[type="number"] {
+      width: 54px;
+    }
+
+    .tmpl-ctrl input:focus,
+    .tmpl-ctrl select:focus {
+      border-color: var(--gold);
+    }
+
+    .tmpl-ctrl span {
+      font-size: 11px;
+      color: var(--ink-soft);
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .field label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--ink-soft);
+      letter-spacing: 0.5px;
+    }
+
+    .field select,
+    .field input[type="time"] {
+      background: var(--bg);
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      padding: 9px 12px;
+      font-family: 'Heebo', sans-serif;
+      font-size: 14px;
+      color: var(--ink);
+      outline: none;
+      transition: border-color 0.2s;
+      direction: rtl;
+      width: 100%;
+    }
+
+    .field select:focus,
+    .field input:focus {
+      border-color: var(--gold);
+    }
+
+    .btn-gen {
+      width: 100%;
+      background: var(--gold);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 12px;
+      font-family: 'Frank Ruhl Libre', serif;
+      font-size: 15px;
+      cursor: pointer;
+      letter-spacing: 1px;
+      transition: background 0.2s;
+    }
+
+    .btn-gen:hover {
+      background: var(--gold-light);
+    }
+
+    .reset-link {
+      font-size: 11px;
+      color: var(--ink-soft);
+      background: none;
+      border: none;
+      cursor: pointer;
+      text-decoration: underline;
+      margin-right: auto;
+    }
+
+    .reset-link:hover {
+      color: var(--red);
+    }
+
+    .clear-cache-btn {
+      background: var(--red-bg);
+      color: var(--red);
+      border: 1px solid #f5c6c6;
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-size: 11px;
+      cursor: pointer;
+      font-weight: 600;
+      margin-right: 10px;
+    }
+
+    .clear-cache-btn:hover {
+      background: #f8d7da;
+    }
+
+    .preview-wrap {
+      display: none;
+    }
+
+    .preview-wrap.visible {
+      display: block;
+      animation: fadeUp 0.35s ease forwards;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(14px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .preview-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .preview-header span {
+      font-size: 11px;
+      color: var(--ink-soft);
+      letter-spacing: 1px;
+    }
+
+    .btn-copy {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      background: var(--green);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 9px 18px;
+      font-family: 'Heebo', sans-serif;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-copy:hover {
+      background: #245a42;
+    }
+
+    .btn-copy.copied {
+      background: #1a7a3a;
+      transform: scale(1.04);
+    }
+
+    .copy-status {
+      display: none;
+      margin-top: 10px;
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      text-align: center;
+    }
+
+    .copy-status.success {
+      display: block;
+      background: #d4edda;
+      color: #1a5c2a;
+      border: 1px solid #a8d5b5;
+    }
+
+    .copy-status.error {
+      display: block;
+      background: var(--red-bg);
+      color: var(--red);
+      border: 1px solid #f5c6c6;
+    }
+
+    .wa-bg {
+      background: #e5ddd5;
+      border-radius: 14px;
+      padding: 14px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .wa-bg::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Cg fill='%23b0a898' fill-opacity='0.12'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+
+    .bubble {
+      background: #fff;
+      border-radius: 12px 12px 12px 0;
+      padding: 13px 16px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+      font-size: 14px;
+      line-height: 1.85;
+      color: #111;
+      direction: rtl;
+    }
+
+    .bubble-time {
+      font-size: 11px;
+      color: #999;
+      text-align: left;
+      margin-top: 5px;
+      direction: ltr;
+    }
+
+    @media (max-width: 480px) {
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+
+      .panel {
+        padding: 16px 14px;
+      }
+
+      .tmpl-ctrl .badge {
+        display: none;
+      }
+    }
+  </style>
+
+</head>
+
+</html>
+
+
+
+
+
+</head>
+
+<body>
+  <div class="page-wrap">
+
+    <header class="site-header">
+      <div class="yishuv">גבעת הרואה</div>
+      <h1>לוח זמנים לשבת</h1>
+      <div class="divider">✦</div>
+    </header>
+
+    <div class="panel">
+      <div class="panel-title">🕯️ בחר פרשה ושעת מנחה</div>
+
+      <div class="field"
+        style="margin-bottom: 15px; flex-direction: row; gap: 20px; align-items: center; justify-content: center; background: var(--gold-pale); padding: 10px; border-radius: 8px;">
+        <label style="font-weight: bold; margin: 0;">הגדרת עונה:</label>
+        <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+          <input type="radio" name="season" value="summer" checked onchange="autoGen()"> שעון קיץ
+        </label>
+        <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+          <input type="radio" name="season" value="winter" onchange="autoGen()"> שעון חורף
+        </label>
+      </div>
+
+      <div class="form-row">
+        <div class="field">
+          <label>פרשת השבוע</label>
+          <select id="parasha" onchange="updateWkMincha(); autoGen();">
+            <option value="">-- בחר פרשה --</option>
+            <option value="תזריע מצורע" data-c="18:44" data-h="19:48">תזריע מצורע</option>
+            <option value="אחרי מות קדושים" data-c="18:49" data-h="19:54">אחרי מות קדושים</option>
+            <option value="אמור" data-c="18:54" data-h="20:00">אמור</option>
+            <option value="בהר בחוקותי" data-c="18:59" data-h="20:05">בהר בחוקותי</option>
+            <option value="במדבר" data-c="19:04" data-h="20:11" data-m="1">במדבר</option>
+            <option value="נשא" data-c="19:09" data-h="20:16">נשא</option>
+            <option value="בהעלותך" data-c="19:14" data-h="20:21">בהעלותך</option>
+            <option value="שלח" data-c="19:18" data-h="20:25">שלח</option>
+            <option value="קרח" data-c="19:21" data-h="20:29">קרח</option>
+            <option value="חוקת" data-c="19:23" data-h="20:31">חוקת</option>
+            <option value="בלק" data-c="19:24" data-h="20:32">בלק</option>
+            <option value="פינחס" data-c="19:24" data-h="20:32">פינחס</option>
+            <option value="מטות מסעי" data-c="19:23" data-h="20:30" data-m="1">מטות מסעי</option>
+            <option value="דברים חזון" data-c="19:21" data-h="20:27">דברים חזון</option>
+            <option value="ואתחנן" data-c="19:17" data-h="20:22">ואתחנן</option>
+            <option value="עקב" data-c="19:12" data-h="20:16">עקב</option>
+            <option value="ראה" data-c="19:06" data-h="20:10" data-m="1">ראה</option>
+            <option value="שופטים" data-c="18:59" data-h="20:02">שופטים</option>
+            <option value="כי תצא" data-c="18:51" data-h="19:54">כי תצא</option>
+            <option value="כי תבוא" data-c="18:43" data-h="19:45">כי תבוא</option>
+            <option value="נצבים וילך" data-c="18:34" data-h="19:35" data-m="1">נצבים וילך</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>שעת מנחה שבת אחה"צ</label>
+          <input type="time" id="mincha-pm" step="300" value="18:00" oninput="autoGen()">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="field">
+          <label>שעת מנחה אמצ"ש</label>
+          <input type="time" id="mincha-week" step="300" value="13:30" oninput="autoGen()">
+        </div>
+      </div>
+
+    </div>
+
+    <button class="settings-toggle" id="stoggle" onclick="toggleSettings()">
+      <span>⚙️ &nbsp;עריכת טמפלט – שנה זמנים, כותרות, הסתר שורות</span>
+      <span class="arrow">▼</span>
+    </button>
+
+    <div class="panel" id="settings-panel" style="display:none;">
+      <div class="panel-title" style="justify-content:space-between; flex-wrap: wrap; gap: 10px;">
+        <span>✏️ עריכת טמפלט</span>
+        <div style="display: flex; align-items: center;">
+          <button class="clear-cache-btn" onclick="clearCache()">מחיקת קאש ואיפוס כללי</button>
+          <button class="reset-link" onclick="resetSettings()">↺ איפוס טקסטים</button>
+        </div>
+      </div>
+
+      <div class="tmpl-section">
+        <div class="tmpl-section-label">ערב שבת</div>
+        <div class="tmpl-row" id="row-shir">
+          <input type="checkbox" class="tmpl-check" id="show-shir" checked
+            onchange="syncRow('row-shir','show-shir'); autoGen()">
+          <div class="tmpl-label"><input type="text" id="lbl-shir" value="שיר השירים" oninput="autoGen()"></div>
+          <div class="tmpl-ctrl">
+            <span class="badge">דק' לפני קבלת שבת</span>
+            <input type="number" id="off-shir" value="10" min="0" max="90" oninput="autoGen()">
+            <span>דק'</span>
+          </div>
+        </div>
+        <div class="tmpl-row" id="row-kabbalat">
+          <input type="checkbox" class="tmpl-check" id="show-kabbalat" checked
+            onchange="syncRow('row-kabbalat','show-kabbalat'); autoGen()">
+          <div class="tmpl-label"><input type="text" id="lbl-kabbalat" value="מנחה וקבלת שבת" oninput="autoGen()"></div>
+          <div class="tmpl-ctrl">
+            <span class="badge">דק' אחרי הדלקת נרות</span>
+            <input type="number" id="off-kabbalat" value="15" min="0" max="60" oninput="autoGen()">
+            <span>דק'</span>
+          </div>
+        </div>
+        <div class="tmpl-row" id="row-shki">
+          <input type="checkbox" class="tmpl-check" id="show-shki" checked
+            onchange="syncRow('row-shki','show-shki'); autoGen()">
+          <div class="tmpl-label"><input type="text" id="lbl-shki" value="שקיעה" oninput="autoGen()"></div>
+          <div class="tmpl-ctrl">
+            <span class="badge">דק' אחרי הדלקת נרות</span>
+            <input type="number" id="off-shki" value="30" min="0" max="90" oninput="autoGen()">
+            <span>דק'</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="tmpl-section">
+        <div class="tmpl-section-label">שחרית שבת — זמן קיץ / זמן חורף</div>
+        <div class="tmpl-row" id="row-chavura">
+          <input type="checkbox" class="tmpl-check" id="show-chavura" checked
+            onchange="syncRow('row-chavura','show-chavura'); autoGen()">
+          <div class="tmpl-label"><input type="text" id="lbl-chavura" value="חבורא בעין איה" oninput="autoGen()"></div>
+          <div class="tmpl-ctrl">
+            <span class="badge">קיץ</span>
+            <input type="time" id="fix-chavura-s" value="07:30" oninput="autoGen()">
+            <span class="badge">חורף</span>
+            <input type="time" id="fix-chavura-w" value="08:00" oninput="autoGen()">
+          </div>
+        </div>
+        <div class="tmpl-row" id="row-shacharit">
+          <input type="checkbox" class="tmpl-check" id="show-shacharit" checked
+            onchange="syncRow('row-shacharit','show-shacharit'); autoGen()">
+          <div class="tmpl-label"><input type="text" id="lbl-shacharit" value="שחרית" oninput="autoGen()"></div>
+          <div class="tmpl-ctrl">
+            <span class="badge">קיץ</span>
+            <input type="time" id="fix-shacharit-s" value="08:30" oninput="autoGen()">
+            <span class="badge">חורף</span>
+            <input type="time" id="fix-shacharit-w" value="08:00" oninput="autoGen()">
+          </div>
+        </div>
+        <div class="tmpl-row" id="row-yeladim">
+          <input type="checkbox" class="tmpl-check" id="show-yeladim" checked
+            onchange="syncRow('row-yeladim','show-yeladim'); autoGen()">
+          <div class="tmpl-label"><input type="text" id="lbl-yeladim" value="תפילת ילדים" oninput="autoGen()"></div>
+          <div class="tmpl-ctrl">
+            <span class="badge">קיץ</span>
+            <input type="time" id="fix-yeladim-s" value="10:00" oninput="autoGen()">
+            <span class="badge">חורף</span>
+            <input type="time" id="fix-yeladim-w" value="09:30" oninput="autoGen()">
+          </div>
+        </div>
+        <div class="tmpl-row" id="row-gdola">
+          <input type="checkbox" class="tmpl-check" id="show-gdola" checked
+            onchange="syncRow('row-gdola','show-gdola'); autoGen()">
+          <div class="tmpl-label"><input type="text" id="lbl-gdola" value="מנחה גדולה" oninput="autoGen()"></div>
+          <div class="tmpl-ctrl">
+            <span class="badge">קיץ</span>
+            <input type="time" id="fix-gdola-s" value="13:15" oninput="autoGen()">
+            <span class="badge">חורף</span>
+            <input type="time" id="fix-gdola-w" value="12:30" oninput="autoGen()">
+          </div>
+        </div>
+      </div>
+
+      <div class="tmpl-section">
+        <div class="tmpl-section-label">אחר הצהריים — יחסי למנחה</div>
+        <div class="tmpl-row" id="row-chlimud">
+          <input type="checkbox" class="tmpl-check" id="show-chlimud" checked
+            onchange="syncRow('row-chlimud','show-chlimud'); autoGen()">
+          <div class="tmpl-label"><input type="text" id="lbl-chlimud" value="חבורת לימוד פרשת שבוע" oninput="autoGen()">
+          </div>
+          <div class="tmpl-ctrl">
+            <span class="badge">דק' לפני מנחה</span>
+            <input type="number" id="off-chlimud" value="60" min="0" max="180" oninput="autoGen()">
+            <span>דק'</span>
+          </div>
+        </div>
+        <div class="tmpl-row" id="row-oneg">
+          <input type="checkbox" class="tmpl-check" id="show-oneg" checked
+            onchange="syncRow('row-oneg','show-oneg'); autoGen()">
+          <div class="tmpl-label"><input type="text" id="lbl-oneg" value="עונג שבת לילדים" oninput="autoGen()"></div>
+          <div class="tmpl-ctrl">
+            <span class="badge">דק' לפני מנחה</span>
+            <input type="number" id="off-oneg" value="35" min="0" max="180" oninput="autoGen()">
+            <span>דק'</span>
+          </div>
+        </div>
+        <div class="tmpl-row sub" id="row-livui">
+          <input type="checkbox" class="tmpl-check" id="show-livui"
+            onchange="syncRow('row-livui','show-livui'); autoGen()">
+          <div class="tmpl-label"><span class="sub-desc">↳ הוסף תווית <strong>(בליווי הורה/מבוגר)</strong> אחרי שעת עונג
+              שבת</span></div>
+        </div>
+        <div class="tmpl-row" id="row-horim">
+          <input type="checkbox" class="tmpl-check" id="show-horim" checked
+            onchange="syncRow('row-horim','show-horim'); autoGen()">
+          <div class="tmpl-label"><input type="text" id="lbl-horim" value="לימוד הורים וילדים" oninput="autoGen()">
+          </div>
+          <div class="tmpl-ctrl">
+            <span class="badge">דק' לפני מנחה</span>
+            <input type="number" id="off-horim" value="20" min="0" max="180" oninput="autoGen()">
+            <span>דק'</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="tmpl-section">
+        <div class="tmpl-section-label">הגדרות אחרות</div>
+        <div class="tmpl-row" id="row-mincha-sunset">
+          <input type="checkbox" class="tmpl-check" id="show-mincha-sunset" checked
+            onchange="syncRow('row-mincha-sunset','show-mincha-sunset'); autoGen()">
+          <div class="tmpl-label"><span class="sub-desc">מנחה באמצע שבוע – דקות לפני שקיעה</span></div>
+          <div class="tmpl-ctrl">
+            <input type="number" id="mincha-minutes-before-sunset" value="20" min="0" max="60" oninput="autoGen()">
+            <span>דק'</span>
+          </div>
+        </div>
+        <div class="tmpl-row">
+          <div class="tmpl-label"><span class="sub-desc">ערבית – שינוי ביחס לצאת שבת</span></div>
+          <div class="tmpl-ctrl">
+            <input type="number" id="arvit-offset-minutes" value="0" min="-60" max="60" oninput="autoGen()">
+            <span>דק'</span>
+          </div>
+        </div>
+        <div class="tmpl-row">
+          <div class="tmpl-label"><span class="sub-desc">עיגול זמן לערבית של צאת שבת</span></div>
+          <div class="tmpl-ctrl">
+            <select id="arvit-round" onchange="autoGen()">
+              <option value="none">אין עיגול</option>
+              <option value="up">לעגל למעלה</option>
+              <option value="down">לעגל למטה</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="tmpl-section">
+        <div class="tmpl-section-label">תפילות אמצע שבוע</div>
+        <div class="tmpl-row" id="row-wk-shach">
+          <input type="checkbox" class="tmpl-check" id="show-wk-shach" checked
+            onchange="syncRow('row-wk-shach','show-wk-shach'); autoGen()">
+          <div class="tmpl-label"><span class="sub-desc">שחרית (א–ה / יום ו')</span></div>
+          <div class="tmpl-ctrl">
+            <span class="badge">א–ה</span>
+            <input type="time" id="fix-wk-shach" value="06:20" oninput="autoGen()">
+            <span class="badge">ו'</span>
+            <input type="time" id="fix-wk-fri" value="06:30" oninput="autoGen()">
+          </div>
+        </div>
+        <div class="tmpl-row" id="row-wk-arvit">
+          <input type="checkbox" class="tmpl-check" id="show-wk-arvit" checked
+            onchange="syncRow('row-wk-arvit','show-wk-arvit'); autoGen()">
+          <div class="tmpl-label"><span class="sub-desc">ערבית</span></div>
+          <div class="tmpl-ctrl">
+            <input type="time" id="fix-wk-arvit" value="20:15" oninput="autoGen()">
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="preview-wrap" id="pw">
+      <div class="preview-header">
+        <span>תצוגה מקדימה – וואטסאפ</span>
+        <button class="btn-copy" id="cbtn" onclick="doCopy()">
+          <svg width="15" height="15" fill="none" viewBox="0 0 24 24">
+            <path
+              d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"
+              stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          העתק לוואטסאפ
+        </button>
+      </div>
+      <div id="copy-status" class="copy-status"></div>
+      <div class="wa-bg">
+        <div class="bubble" id="bubble"></div>
+        <div class="bubble-time" id="btime"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const CACHE_KEY = 'givat_haroe_schedule_v1';
+    const toM = t => { const [h, m] = t.split(':').map(Number); return h * 60 + m; };
+    const frM = m => `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`;
+    const r5 = m => Math.ceil(m / 5) * 5;
+    const val = id => document.getElementById(id).value;
+    const chk = id => document.getElementById(id).checked;
+    let raw = '';
+
+    const DEFAULTS = {
+      'parasha': '', 'mincha-pm': '18:00', 'mincha-week': '13:30',
+      'off-shir': 10, 'off-kabbalat': 15, 'off-shki': 30, 'mincha-minutes-before-sunset': 20,
+      'arvit-offset-minutes': 0, 'arvit-round': 'none',
+      'fix-chavura-s': '08:00', 'fix-chavura-w': '07:30',
+      'fix-shacharit-s': '08:30', 'fix-shacharit-w': '08:00',
+      'fix-yeladim-s': '10:00', 'fix-yeladim-w': '09:30',
+      'fix-gdola-s': '13:15', 'fix-gdola-w': '12:30',
+      'off-chlimud': 60, 'off-oneg': 35, 'off-horim': 20,
+      'fix-wk-shach': '06:20', 'fix-wk-fri': '06:30', 'fix-wk-arvit': '20:15',
+      'lbl-shir': 'שיר השירים', 'lbl-kabbalat': 'מנחה וקבלת שבת', 'lbl-shki': 'שקיעה',
+      'lbl-chavura': 'חבורא בעין איה', 'lbl-shacharit': 'שחרית', 'lbl-yeladim': 'תפילת ילדים',
+      'lbl-gdola': 'מנחה גדולה', 'lbl-chlimud': 'חבורת לימוד פרשת שבוע',
+      'lbl-oneg': 'עונג שבת לילדים', 'lbl-horim': 'לימוד הורים וילדים'
+    };
+
+    const ALL_ROWS = [
+      ['row-shir', 'show-shir'], ['row-kabbalat', 'show-kabbalat'], ['row-shki', 'show-shki'],
+      ['row-chavura', 'show-chavura'], ['row-shacharit', 'show-shacharit'], ['row-yeladim', 'show-yeladim'],
+      ['row-gdola', 'show-gdola'], ['row-chlimud', 'show-chlimud'], ['row-oneg', 'show-oneg'],
+      ['row-livui', 'show-livui'], ['row-horim', 'show-horim'], ['row-mincha-sunset', 'show-mincha-sunset'],
+      ['row-wk-shach', 'show-wk-shach'], ['row-wk-arvit', 'show-wk-arvit']
+    ];
+
+    function syncRow(rowId, chkId) {
+      document.getElementById(rowId).classList.toggle('disabled', !document.getElementById(chkId).checked);
+    }
+
+    function toggleSettings() {
+      const p = document.getElementById('settings-panel');
+      const b = document.getElementById('stoggle');
+      const open = p.style.display === 'none';
+      p.style.display = open ? 'block' : 'none';
+      b.classList.toggle('open', open);
+    }
+
+    function saveToCache() {
+      const data = {};
+      // Save all inputs and selects
+      document.querySelectorAll('input:not([type="radio"]), select, input[type="radio"]:checked').forEach(el => {
+        if (el.type === 'checkbox') data[el.id] = el.checked;
+        else if (el.type === 'radio') data[el.name] = el.value;
+        else data[el.id] = el.value;
+      });
+      localStorage.setItem(CACHE_KEY, JSON.stringify(data));
+    }
+
+    function loadFromCache() {
+      const cached = localStorage.getItem(CACHE_KEY);
+      if (!cached) return;
+      const data = JSON.parse(cached);
+      Object.keys(data).forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          if (el.type === 'checkbox') el.checked = data[id];
+          else el.value = data[id];
+        } else {
+          // Check for radio buttons by name
+          const radio = document.querySelector(`input[name="${id}"][value="${data[id]}"]`);
+          if (radio) radio.checked = true;
+        }
+      });
+      // Sync row UI
+      ALL_ROWS.forEach(([r, c]) => {
+        const el = document.getElementById(c);
+        if (el) document.getElementById(r)?.classList.toggle('disabled', !el.checked);
+      });
+    }
+
+    function clearCache() {
+      if (confirm('האם אתה בטוח שברצונך למחוק את כל הבחירות השמורות ולאפס הכל?')) {
+        localStorage.removeItem(CACHE_KEY);
+        location.reload();
+      }
+    }
+
+    function resetSettings() {
+      Object.entries(DEFAULTS).forEach(([id, v]) => { const el = document.getElementById(id); if (el && id !== 'parasha') el.value = v; });
+      ALL_ROWS.forEach(([r, c]) => {
+        const el = document.getElementById(c);
+        if (el) el.checked = (c !== 'show-livui');
+        document.getElementById(r)?.classList.toggle('disabled', !el.checked);
+      });
+      updateWkMincha();
+      autoGen();
+    }
+
+    function updateWkMincha() {
+      const sel = document.getElementById('parasha');
+      const o = sel.options[sel.selectedIndex];
+      if (o && o.value) {
+        const candleTime = o.dataset.c;
+        const candleM = toM(candleTime);
+        const sunSetM = candleM + 30; // Sunset is 30 minutes after candle lighting
+        const minchaMinutesBeforeSunset = parseInt(val('mincha-minutes-before-sunset'));
+        const roundedM = Math.round((sunSetM - minchaMinutesBeforeSunset) / 5) * 5;
+        document.getElementById('mincha-week').value = frM(roundedM);
+      }
+    }
+
+    function autoGen() {
+      if (document.getElementById('parasha').value) {
+        gen();
+        saveToCache();
+      }
+    }
+
+    function gen() {
+      const sel = document.getElementById('parasha');
+      const o = sel.options[sel.selectedIndex];
+      if (!o || !o.value) return;
+
+      const parasha = o.value;
+      const c = o.dataset.c;
+      const h = o.dataset.h;
+      const mevorchim = o.dataset.m === '1';
+      const pm = val('mincha-pm');
+      const pmWeek = val('mincha-week');
+      const kayitz = document.querySelector('input[name="season"]:checked').value === 'summer';
+      const arvitOffset = parseInt(val('arvit-offset-minutes')) || 0;
+      const arvitRound = val('arvit-round');
+
+      const cM = toM(c);
+      const tlvM = cM + 5;
+      const kabM = r5(cM + parseInt(val('off-kabbalat')));
+      const shirM = kabM - parseInt(val('off-shir'));
+      const sunM = cM + parseInt(val('off-shki'));
+
+      const chavura = kayitz ? val('fix-chavura-s') : val('fix-chavura-w');
+      const shacharit = kayitz ? val('fix-shacharit-s') : val('fix-shacharit-w');
+      const yeladimM = toM(shacharit) + 90;
+      const yeladim = frM(yeladimM);
+      const gdola = kayitz ? val('fix-gdola-s') : val('fix-gdola-w');
+
+      const arvitBaseM = toM(h);
+      let arvitM = arvitBaseM + arvitOffset;
+      if (arvitRound === 'up') arvitM = Math.ceil(arvitM / 5) * 5;
+      else if (arvitRound === 'down') arvitM = Math.floor(arvitM / 5) * 5;
+      const arvit = frM(arvitM);
+      const tzet = frM(arvitBaseM);
+
+      const pmM = toM(pm);
+      const chLimudM = pmM - parseInt(val('off-chlimud'));
+      const onegM = pmM - parseInt(val('off-oneg'));
+      const horimM = pmM - parseInt(val('off-horim'));
+
+      const kabStr = mevorchim ? `${val('lbl-kabbalat')} (קרליבך) - ${frM(kabM)}` : `${val('lbl-kabbalat')} - ${frM(kabM)}`;
+
+      const L = [`*לו"ז שבת ${parasha}*`, '', `זמן הדלקת נרות - ${c} (בתל אביב ${frM(tlvM)})`];
+      if (chk('show-shir')) L.push(`* ${val('lbl-shir')} - ${frM(shirM)}`);
+      if (chk('show-kabbalat')) L.push(`* *${kabStr}*`);
+      if (chk('show-shki')) L.push(`* ${val('lbl-shki')} - ${frM(sunM)}`);
+      L.push('');
+      if (chk('show-chavura')) L.push(`* ${val('lbl-chavura')} - ${chavura}`);
+      if (chk('show-shacharit')) L.push(`*${val('lbl-shacharit')} - ${shacharit}*`);
+      if (chk('show-yeladim')) L.push(`* ${val('lbl-yeladim')} - ${yeladim}`);
+      L.push('');
+      if (chk('show-gdola')) L.push(`*${val('lbl-gdola')} - ${gdola}*`);
+      L.push('');
+      if (chk('show-chlimud')) L.push(`* ${val('lbl-chlimud')} - ${frM(chLimudM)}`);
+      if (chk('show-oneg')) {
+        const livui = chk('show-livui') ? ' *(בליווי הורה/מבוגר)*' : '';
+        L.push(`* ${val('lbl-oneg')} - ${frM(onegM)}${livui}`);
+      }
+      if (chk('show-horim')) L.push(`* ${val('lbl-horim')} - ${frM(horimM)}`);
+      L.push(`*מנחה - ${pm}*`, '', `*ערבית:* ${arvit}`, `*צאת שבת:* ${tzet}`);
+
+      if (chk('show-wk-shach') || chk('show-wk-arvit')) {
+        L.push('', '___________________________', '*_תפילות אמצע שבוע:_*');
+        if (chk('show-wk-shach')) L.push(`*שחרית:* ${val('fix-wk-shach')} (יום ו' ${val('fix-wk-fri')})`);
+        L.push(`*מנחה:* ${pmWeek}`);
+        if (chk('show-wk-arvit')) L.push(`*ערבית:* ${val('fix-wk-arvit')}`);
+      }
+      L.push('', '*שבת שלום!*');
+      raw = L.join('\n');
+
+      const rWA = t => t.replace(/\*(.*?)\*/g, '<strong>$1</strong>').replace(/_(.*?)_/g, '<em>$1</em>');
+      document.getElementById('bubble').innerHTML = rWA(raw.replace(/\n/g, '<br>'));
+      document.getElementById('btime').textContent = new Date().toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' });
+      document.getElementById('pw').classList.add('visible');
+    }
+
+    function doCopy() {
+      if (!raw) return;
+      navigator.clipboard.writeText(raw).then(() => {
+        const b = document.getElementById('cbtn');
+        const s = document.getElementById('copy-status');
+        b.innerHTML = '✓ הועתק!'; b.classList.add('copied');
+        s.className = 'copy-status success'; s.textContent = '✅ הועתק!';
+        setTimeout(() => {
+          b.innerHTML = 'העתק לוואטסאפ'; b.classList.remove('copied'); s.className = 'copy-status';
+        }, 2000);
+      });
+    }
+
+    // Initialization
+    window.addEventListener('DOMContentLoaded', () => {
+      loadFromCache();
+      if (document.getElementById('parasha').value) gen();
+    });
+  </script>
+</body>
+
+</html>
