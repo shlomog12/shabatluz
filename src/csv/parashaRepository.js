@@ -2,24 +2,26 @@ import { parseCSV } from './csvParser.js';
 
 /**
  * @typedef {Object} ParashaRecord
- * @property {string} name - שם הפרשה (מוצג בתפריט ובהודעה)
- * @property {string} candle - זמן הדלקת נרות, "HH:MM"
- * @property {string|null} havdalah - זמן הבדלה, "HH:MM", או null אם
- *   לא חל (למשל בחג שחל בשבת שאין לו זמן הבדלה נפרד)
- * @property {boolean} mevorchim - האם זו שבת מברכים
- * @property {boolean} isDst - האם השבת חלה בשעון קיץ
+ * @property {string} name - Parasha name (shown in the dropdown and message)
+ * @property {string} candle - Candle-lighting time, "HH:MM"
+ * @property {string|null} havdalah - Havdalah time, "HH:MM", or null if
+ *   not applicable (e.g. a Yom Tov that falls on Shabbat, with no
+ *   separate havdalah time)
+ * @property {boolean} mevorchim - Whether this is Shabbat Mevorchim
+ * @property {boolean} isDst - Whether this Shabbat falls in DST
  */
 
 /**
- * טוען ומפענח את קובץ ה-CSV שכתובתו ניתנת, ומחזיר מערך רשומות פרשה
- * תקינות בלבד (שורות ללא שם או ללא זמן הדלקת נרות מסוננות).
+ * Loads and parses the CSV file at the given path, returning an array
+ * of valid ParashaRecord entries (rows missing a name or candle time
+ * are filtered out).
  * @param {string} csvPath
  * @returns {Promise<ParashaRecord[]>}
  */
 export async function loadParashaRecords(csvPath) {
   const response = await fetch(csvPath);
   if (!response.ok) {
-    throw new Error(`שגיאה בטעינת קובץ CSV: ${response.statusText}`);
+    throw new Error(`Failed to load CSV file: ${response.statusText}`);
   }
 
   const csvText = await response.text();
@@ -31,9 +33,10 @@ export async function loadParashaRecords(csvPath) {
 function toParashaRecord(row) {
   const name = row.parasha?.trim();
   const candle = row.candle?.trim();
-  // שם ושעת הדלקת נרות הם חובה. הבדלה יכולה להיות חסרה (למשל בחג
-  // שחל בשבת) - הפרשה עדיין תוצג, רק שורות ערבית/צאת שבת יושמטו
-  // מההודעה שתיווצר (ראו domain/scheduleGenerator.js).
+  // Name and candle-lighting time are required. Havdalah may be
+  // missing (e.g. a Yom Tov that falls on Shabbat) - the parasha is
+  // still shown, but the generated message omits the arvit/havdalah
+  // lines for it (see domain/scheduleGenerator.js).
   if (!name || !candle) return null;
 
   return {

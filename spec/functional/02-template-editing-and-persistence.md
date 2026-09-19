@@ -1,66 +1,75 @@
-# עריכת טמפלט, שמירה, ומקור נתוני הפרשות
+# Template Editing, Persistence, and the Parasha Data Source
 
-## פאנל "עריכת טמפלט"
+## The "edit template" panel
 
-מקופל כברירת מחדל (נפתח/נסגר בלחיצה על הכפתור המתאים). מכיל שורות
-עבור כל רכיב אפשרי בהודעה, מקובצות לפי חלקי השבת (ערב שבת / שחרית /
-אחר הצהריים / הגדרות אחרות / אמצע שבוע — ראו
-[01-schedule-generation-rules.md](01-schedule-generation-rules.md)).
+Collapsed by default (opened/closed by clicking the matching button).
+Contains a row for every possible message component, grouped by part of
+Shabbat (Friday evening / morning / afternoon / other settings / midweek
+— see [01-schedule-generation-rules.md](01-schedule-generation-rules.md)).
 
-כל שורה כוללת חלק או כל מהרכיבים הבאים:
+Each row includes some or all of the following:
 
-- **תיבת "הצג שורה"**: קובעת אם השורה תופיע בהודעה שתיווצר. כיבוי
-  משנה גם את המראה החזותי של השורה בפאנל (`opacity` מוקטן, class
-  `disabled`) כאינדיקציה ויזואלית.
-- **תווית לעריכה** (שדה טקסט חופשי): הטקסט שיוצג בהודעה עצמה. ניתן
-  לעריכה מלאה — למשל לשנות "חבורא בעין איה" לשם מרצה אחר לשבוע הזה.
-- **בקרות זמן**: שדה שעה קבועה, או שדה מספרי (היסט בדקות מזמן אחר).
+- **"Show row" checkbox**: whether the row appears in the generated
+  message. Turning it off also changes the row's visual appearance in
+  the panel (reduced opacity, `disabled` class) as a visual indicator.
+- **Editable label** (free-text field): the text shown in the message
+  itself — e.g. can be changed from "חבורא בעין איה" to a different
+  speaker's name for this week.
+- **Time controls**: a fixed time field, or a numeric field (an offset
+  in minutes from another time).
 
-כל שינוי בכל שדה **מייצר מחדש את ההודעה באופן מיידי** (בלי כפתור
-"אישור" נפרד) ושומר אוטומטית ל-`localStorage`.
+Every field change **regenerates the message immediately** (no separate
+"confirm" button) and auto-saves to `localStorage`.
 
-## איפוס וניקוי
+## Reset and clear
 
-שני כפתורים נפרדים בראש פאנל ההגדרות, עם משמעות שונה בכוונה:
+Two separate buttons at the top of the settings panel, deliberately
+different in meaning:
 
-- **"↺ איפוס טקסטים"**: מחזיר את כל השדות (תוויות, היסטים, שעות
-  קבועות, תיבות "הצג") לערכי ברירת המחדל **בזיכרון בלבד** — לא מוחק
-  את הקאש השמור, ולא מרענן את הדף. הבחירה עצמה (הפרשה שנבחרה, שעות
-  המנחה) **לא** מתאפסת.
-- **"מחיקת קאש ואיפוס כללי"**: מבקש אישור מהמשתמש (`confirm`), ואז
-  מוחק לחלוטין את הקאש השמור ב-`localStorage` ומרענן את הדף — חזרה
-  מלאה למצב ברירת המחדל, כולל בחירת הפרשה.
+- **"↺ Reset labels"**: restores every field (labels, offsets, fixed
+  times, "show" checkboxes) to its default value **in memory only** —
+  does not delete the saved cache, and does not reload the page. The
+  selection itself (chosen parasha, mincha times) is **not** reset.
+- **"Clear cache and reset all"**: asks the user for confirmation
+  (`confirm`), then fully deletes the saved cache in `localStorage` and
+  reloads the page — a complete return to the default state, including
+  the parasha selection.
 
-## שמירה אוטומטית (`localStorage`)
+## Auto-save (`localStorage`)
 
-כל שדה בטופס (כולל הפרשה הנבחרת ושעות המנחה, לא רק שדות הטמפלט)
-נשמר תחת מפתח אחד קבוע (`givat_haroe_schedule_v1`), כאובייקט JSON
-ממזהה שדה לערכו. בכל טעינת דף, אם קיים קאש שמור — הוא משוחזר לפני
-שההודעה הראשונה נוצרת, כך שהגבאי חוזר בדיוק למצב שהשאיר בפעם הקודמת
-(כולל תוויות מותאמות אישית, אם שינה).
+Every form field (including the selected parasha and mincha times, not
+just template fields) is saved under one fixed key
+(`givat_haroe_schedule_v1`), as a JSON object mapping field id to its
+value. On every page load, if a saved cache exists — it's restored before
+the first message is generated, so the admin returns to exactly the
+state they left last time (including any customized labels).
 
-**חשוב לתחזוקה**: השמירה גנרית (סורקת את כל אלמנטי `input`/`select`
-בדף) ולא רשימת שדות מפורשת — הוספת שדה חדש לטופס נשמרת ומשוחזרת
-אוטומטית, בלי לגעת בקוד השמירה.
+**Important for maintenance**: saving is generic (scans every
+`input`/`select` element on the page), not an explicit field list —
+adding a new form field is saved and restored automatically, with no
+change needed to the saving code.
 
-## מקור נתוני הפרשות (`shabbat_times.csv`)
+## Parasha data source (`shabbat_times.csv`)
 
-עמודות: `parasha,candle,havdalah,mevorchim,is_dst`.
+Columns: `parasha,candle,havdalah,mevorchim,is_dst`.
 
-- `parasha` ו-`candle` הם **חובה** — שורה בלעדיהם מדולגת בשקט ולא
-  תופיע ברשימה.
-- `havdalah` יכול להיות **ריק** (למשל בחג שחל בשבת) — ראו הטיפול
-  בשורות ערבית/צאת שבת ב-[01](01-schedule-generation-rules.md).
-- `mevorchim` ו-`is_dst`: `1`/`true` (לא תלוי רישיות) = כן, כל ערך
-  אחר (כולל ריק) = לא.
+- `parasha` and `candle` are **required** — a row missing either is
+  silently skipped and won't appear in the list.
+- `havdalah` can be **empty** (e.g. a Yom Tov falling on Shabbat) — see
+  how the arvit/havdalah lines are handled in
+  [01](01-schedule-generation-rules.md).
+- `mevorchim` and `is_dst`: `1`/`true` (case-insensitive) = yes, any
+  other value (including empty) = no.
 
-הקובץ **תלוי-שנה** ויש לעדכן אותו מדי שנה עברית חדשה, בהתאם ללוח
-השנה ולזמני הדלקת נרות/הבדלה בפועל של גבעת הרואה. עדכון הקובץ בלבד
-(ללא שינוי קוד) מספיק לרענון מלא של רשימת הפרשות לשנה הבאה.
+The file is **year-dependent** and needs to be updated every Hebrew year,
+based on the calendar and Giv'at HaRoe's actual candle-lighting/havdalah
+times. Updating the file alone (no code change) is enough to fully
+refresh the parasha list for the following year.
 
-## טעינה וטיפול בשגיאות
+## Loading and error handling
 
-בכל טעינת דף: הקובץ נטען ומפוענח, רשימת הפרשות בתפריט הנפתח נבנית
-מחדש מהנתונים בקובץ בלבד (אין רשימה "קשיחה" מגובה בקוד). אם הטעינה
-נכשלת (קובץ חסר, שגיאת רשת) — מוצגת הודעת שגיאה גלויה למשתמש מעל
-הטופס, ולא נותר רק תפריט ריק ללא הסבר.
+On every page load: the file is fetched and parsed, and the parasha
+dropdown is rebuilt entirely from the file's data (there's no "hardcoded"
+list backed into the code). If loading fails (missing file, network
+error) — a visible error message is shown to the user above the form,
+rather than leaving just an empty dropdown with no explanation.

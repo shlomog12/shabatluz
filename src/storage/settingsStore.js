@@ -1,16 +1,18 @@
 import { CONFIG } from '../config.js';
 
 /**
- * שמירה/שחזור/מחיקה של מצב הטופס ב-localStorage. אחראי רק על
- * הסנכרון בין ה-DOM ל-localStorage; החלטות UI (כגון אישור מחיקה,
- * רענון הדף) הן באחריות שכבת האפליקציה (src/app.js).
+ * Saving/restoring/clearing form state in localStorage. Responsible
+ * only for syncing the DOM with localStorage; UI decisions (e.g.
+ * confirming deletion, reloading the page) belong to the app layer
+ * (src/app.js).
  */
 
-/** שומר את כל ערכי הטופס הנוכחיים ל-localStorage. */
+/** Saves every current form value to localStorage. */
 export function saveFormToStorage() {
   const data = {};
-  // הבחירה כוללת גם input[type="radio"]:checked באופן גנרי, למקרה
-  // שבעתיד יתווספו כפתורי רדיו לטופס (כרגע אין כאלה בפועל).
+  // Also generically includes input[type="radio"]:checked, in case
+  // radio buttons are added to the form in the future (none exist
+  // currently).
   document.querySelectorAll('input:not([type="radio"]), select, input[type="radio"]:checked').forEach(el => {
     if (el.type === 'checkbox') data[el.id] = el.checked;
     else if (el.type === 'radio') data[el.name] = el.value;
@@ -20,8 +22,8 @@ export function saveFormToStorage() {
 }
 
 /**
- * משחזר ערכי טופס שנשמרו קודם ב-localStorage, אם קיימים.
- * @returns {boolean} true אם היה קאש שמור ושוחזר
+ * Restores previously saved form values from localStorage, if any.
+ * @returns {boolean} true if a saved cache existed and was restored
  */
 export function loadFormFromStorage() {
   const cached = localStorage.getItem(CONFIG.CACHE_KEY);
@@ -41,7 +43,7 @@ export function loadFormFromStorage() {
   return true;
 }
 
-/** מוחק את הקאש השמור. */
+/** Clears the saved cache. */
 export function clearStoredSettings() {
   localStorage.removeItem(CONFIG.CACHE_KEY);
 }

@@ -1,18 +1,18 @@
 /**
- * המרת טקסט חופשי/הודעת לו"ז ל-HTML בטוח לתצוגה.
- * מודול טהור - ללא תלות ב-DOM.
+ * Converts free text / a schedule message into safe display HTML.
+ * Pure module - no dependency on the DOM.
  */
 
-/** בורח מתווי HTML מיוחדים, למניעת הזרקת תגיות דרך שדות טקסט חופשיים. */
+/** Escapes special HTML characters, to prevent tag injection via free-text fields. */
 export const escapeHtml = s => s.replace(/[&<>"']/g, c => ({
   '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
 })[c]);
 
 /**
- * ממיר טקסט הודעה (כולל תחביר Markdown-קל בסגנון וואטסאפ: *מודגש*,
- * _נטוי_) ל-HTML לתצוגה מקדימה. בורח מה-HTML לפני החלת התחביר, כדי
- * שטקסט חופשי (למשל משדות תווית הניתנים לעריכה) לא יוכל להזריק
- * תגיות משלו לתצוגה.
+ * Converts message text (including light WhatsApp-style Markdown syntax:
+ * *bold*, _italic_) into display HTML. Escapes HTML before applying the
+ * syntax, so free text (e.g. from editable label fields) can't inject
+ * its own tags into the preview.
  */
 export const toWhatsAppHtml = text => escapeHtml(text)
   .replace(/\*(.*?)\*/g, '<strong>$1</strong>')

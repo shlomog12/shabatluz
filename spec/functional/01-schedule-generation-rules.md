@@ -1,94 +1,101 @@
-# כללי חישוב הודעת הלו"ז
+# Schedule Message Generation Rules
 
-מסמך זה מתעד את כללי החישוב וההרכבה של הודעת הלו"ז, ללא תלות במימוש
-(המימוש בפועל: `src/domain/scheduleGenerator.js`). כל השעות מחושבות
-כמספר דקות מחצות (0–1439) ומומרות בחזרה למחרוזת "HH:MM" בסוף.
+This document records the calculation and assembly rules for the
+schedule message, independent of implementation (actual implementation:
+`src/domain/scheduleGenerator.js`). All times are computed as
+minutes-since-midnight (0–1439) and converted back to an "HH:MM" string
+at the end.
 
-## קלט
+## Input
 
-- **רשומת פרשה** (משורה בקובץ ה-CSV): שם, זמן הדלקת נרות (`candle`),
-  זמן הבדלה (`havdalah`, עשוי להיות חסר), האם שבת מברכים
-  (`mevorchim`), האם שעון קיץ (`isDst`).
-- **מצב טופס נוכחי**: כל הערכים שהוזנו/הוגדרו ע"י המשתמש — שעת מנחה
-  שבת אחה"צ, שעת מנחה אמצע שבוע, וכל שדות פאנל "עריכת טמפלט" (היסטים
-  בדקות, שעות קבועות, תוויות, ותיבות "הצג שורה").
+- **Parasha record** (one row of the CSV file): name, candle-lighting
+  time (`candle`), havdalah time (`havdalah`, may be missing), whether
+  it's Shabbat Mevorchim (`mevorchim`), whether it's DST (`isDst`).
+- **Current form state**: every value entered/set by the user — Shabbat
+  afternoon mincha time, weekday mincha time, and every field in the
+  "edit template" panel (offsets in minutes, fixed times, labels, and
+  "show row" checkboxes).
 
-## ערב שבת
+## Friday evening
 
-| שורה | חישוב |
+| Line | Calculation |
 |---|---|
-| הדלקת נרות | ישירות מהרשומה. מוצג גם זמן משוער לתל אביב: הדלקת נרות **+5 דקות** (קירוב, מבוסס על מרחק גיאוגרפי משוער; לא מקור הלכתי) |
-| שיר השירים | (זמן קבלת שבת) פחות היסט "דק' לפני קבלת שבת" |
-| מנחה וקבלת שבת | הדלקת נרות + היסט "דק' אחרי הדלקת נרות", **מעוגל למעלה** לכפולה של 5 דקות. אם השבת היא שבת מברכים, מתווספת התווית "(קרליבך)" |
-| שקיעה | הדלקת נרות + היסט "דק' אחרי הדלקת נרות" (שדה נפרד, ברירת מחדל 30) |
+| Candle lighting | Directly from the record. Also shows an estimated Tel Aviv time: candle-lighting time **+5 minutes** (an approximation based on estimated geographic distance; not a halachic source) |
+| Shir HaShirim | (Kabbalat Shabbat time) minus the "minutes before kabbalat shabbat" offset |
+| Mincha & Kabbalat Shabbat | Candle-lighting time + "minutes after candle-lighting" offset, **rounded up** to a multiple of 5 minutes. If it's Shabbat Mevorchim, the label "(קרליבך)" ("Carlebach") is appended |
+| Sunset | Candle-lighting time + "minutes after candle-lighting" offset (a separate field, default 30) |
 
-## שחרית שבת — תלוי עונה
+## Shabbat Morning — Season-Dependent
 
-כל השורות הבאות נקבעות משדה **קבוע** (לא מחושב מהדלקת הנרות), לפי
-דגל `isDst` של הפרשה: קיץ → שדה `...-s`, חורף → שדה `...-w`.
+Every line below is set from a **fixed** field (not derived from
+candle-lighting time), based on the parasha's `isDst` flag: summer →
+`...-s` field, winter → `...-w` field.
 
-| שורה | חישוב |
+| Line | Calculation |
 |---|---|
-| חבורא בעין איה | שעה קבועה (קיץ/חורף) |
-| שחרית | שעה קבועה (קיץ/חורף) |
-| תפילת ילדים | שעת שחרית **+90 דקות**, קבוע |
-| מנחה גדולה | שעה קבועה (קיץ/חורף) |
-| שיעור לנשים | שעה קבועה אחת (לא תלוית עונה) |
+| Chavura (Ein Ayah) | Fixed time (summer/winter) |
+| Shacharit | Fixed time (summer/winter) |
+| Children's tefillah | Shacharit time **+90 minutes**, fixed |
+| Mincha Gedola | Fixed time (summer/winter) |
+| Women's shiur | One fixed time (not season-dependent) |
 
-## אחר הצהריים — יחסית למנחה שבת אחה"צ
+## Afternoon — Relative to Shabbat Afternoon Mincha
 
-כל השורות הבאות הן שעת מנחה שבת אחה"צ (כפי שהוזנה ע"י המשתמש) **פחות**
-היסט בדקות:
+Every line below is the Shabbat afternoon mincha time (as entered by the
+user) **minus** an offset in minutes:
 
-| שורה | היסט |
+| Line | Offset |
 |---|---|
-| חבורת לימוד פרשת שבוע | "דק' לפני מנחה" (ברירת מחדל 60) |
-| עונג שבת לילדים | "דק' לפני מנחה" (ברירת מחדל 35). אם מסומן "בליווי הורה/מבוגר" (שורת משנה), מתווספת התווית בסוגריים |
-| לימוד הורים וילדים | "דק' לפני מנחה" (ברירת מחדל 20) |
+| Weekly parasha study group | "minutes before mincha" (default 60) |
+| Children's oneg shabbat | "minutes before mincha" (default 35). If "with a parent/adult" (sub-row) is checked, that label is appended in parentheses |
+| Parent-and-child study | "minutes before mincha" (default 20) |
 
-## ערבית וצאת שבת
+## Arvit and Havdalah
 
-מבוסס על זמן ההבדלה של הפרשה. **אם ההבדלה חסרה** (למשל חג שחל בשבת
-שאין לו זמן הבדלה נפרד) — שתי השורות (ערבית, צאת שבת) **מושמטות
-לחלוטין** מההודעה, ולא מוצג זמן שגוי (00:00).
+Based on the parasha's havdalah time. **If havdalah is missing** (e.g. a
+Yom Tov falling on Shabbat, with no separate havdalah time) — both lines
+(arvit, havdalah) are **omitted entirely** from the message, rather than
+showing an incorrect time (00:00).
 
-- **צאת שבת**: זמן ההבדלה, ללא שינוי.
-- **ערבית**: זמן ההבדלה + "שינוי ביחס לצאת שבת" (יכול להיות שלילי),
-  ואז מעוגל לפי הגדרת "עיגול זמן לערבית": ללא עיגול / למעלה לכפולת 5
-  / למטה לכפולת 5.
+- **Havdalah ("צאת שבת")**: the havdalah time, unchanged.
+- **Arvit**: havdalah time + "change relative to havdalah" (can be
+  negative), then rounded per the "round arvit time" setting: no
+  rounding / round up to a multiple of 5 / round down to a multiple of 5.
 
-## מנחה באמצע שבוע — הצעה אוטומטית
+## Weekday Mincha — Auto-Suggestion
 
-שעת מנחה אמצע השבוע (`mincha-week`) **מוצעת אוטומטית** בכל בחירת
-פרשה (וניתנת לדריסה ידנית בכל עת):
+The weekday mincha time (`mincha-week`) is **suggested automatically**
+whenever a parasha is selected (and can always be manually overridden):
 
-1. שקיעה משוערת = זמן הדלקת נרות **+30 דקות** (קירוב גס — לא לחישוב
-   הלכתי מדויק, רק כברירת מחדל נוחה שהגבאי יכול לתקן).
-2. שעת מנחה מוצעת = שקיעה משוערת פחות "דק' לפני שקיעה" (ברירת מחדל
-   20), מעוגלת לכפולה הקרובה של 5 דקות.
+1. Estimated sunset = candle-lighting time **+30 minutes** (a rough
+   approximation — not for precise halachic calculation, just a
+   convenient default the admin can correct).
+2. Suggested mincha time = estimated sunset minus "minutes before
+   sunset" (default 20), rounded to the nearest multiple of 5 minutes.
 
-בבלוק "תפילות אמצע שבוע" בהודעה עצמה, שעת המנחה המוצגת היא זו שבשדה
-`mincha-week` בפועל (כולל דריסה ידנית), לא הערך המחושב מחדש.
+In the "midweek prayers" block of the message itself, the mincha time
+shown is whatever is actually in the `mincha-week` field (including any
+manual override), not a freshly recomputed value.
 
-## תפילות אמצע שבוע (א'–ה', יום ו')
+## Midweek Prayers (Sun–Thu, Friday)
 
-בלוק נפרד, מוצג רק אם "שחרית" ו/או "ערבית" של אמצע השבוע מסומנים
-להצגה. שעות קבועות בלבד (שחרית א'-ה', שחרית יום ו' נפרד, ערבית), פרט
-לשורת "מנחה" שמציגה את `mincha-week` הנוכחי.
+A separate block, shown only if midweek "shacharit" and/or "arvit" are
+checked to display. Fixed times only, except the "mincha" line which
+shows the current `mincha-week` value.
 
-## מבנה ההודעה המלא (סדר קבוע)
+## Full Message Structure (fixed order)
 
-1. כותרת: `*לו"ז שבת <פרשה>*`
-2. שורת הדלקת נרות (+ תל אביב)
-3. שיר השירים / קבלת שבת / שקיעה (כל אחת מותנית בתיבת "הצג")
-4. חבורא / שחרית / תפילת ילדים
-5. מנחה גדולה
-6. שיעור לנשים / חבורת לימוד / עונג שבת לילדים / לימוד הורים וילדים
-7. מנחה שבת אחה"צ (תמיד מוצגת, לא ניתנת להסתרה)
-8. ערבית + צאת שבת (רק אם קיימת הבדלה)
-9. בלוק תפילות אמצע שבוע (רק אם שחרית/ערבית אמצע שבוע מסומנים)
-10. "שבת שלום!"
+1. Header: `*לו"ז שבת <parasha>*`
+2. Candle-lighting line (+ Tel Aviv)
+3. Shir HaShirim / Kabbalat Shabbat / Sunset (each conditional on its "show" checkbox)
+4. Chavura / Shacharit / Children's tefillah
+5. Mincha Gedola
+6. Women's shiur / Study group / Children's oneg shabbat / Parent-and-child study
+7. Shabbat afternoon mincha (always shown, cannot be hidden)
+8. Arvit + Havdalah (only if a havdalah time exists)
+9. Midweek prayers block (only if midweek shacharit/arvit are checked)
+10. "שבת שלום!" ("Shabbat Shalom!")
 
-כל שורה (למעט הכותרות הקבועות) מותנית בתיבת "הצג שורה" המתאימה לה
-בפאנל "עריכת טמפלט" — ראו
+Every line (except the fixed headers) is conditional on its matching
+"show row" checkbox in the "edit template" panel — see
 [02-template-editing-and-persistence.md](02-template-editing-and-persistence.md).

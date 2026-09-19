@@ -1,17 +1,17 @@
 import { CONFIG } from '../config.js';
 
-/** מעדכן את מראה שורת טמפלט לפי מצב תיבת הסימון שלה. */
+/** Updates a template row's appearance based on its checkbox state. */
 export function syncRowVisibility(rowId, checkboxId) {
   const checked = document.getElementById(checkboxId)?.checked;
   document.getElementById(rowId)?.classList.toggle('disabled', !checked);
 }
 
-/** מסנכרן את מראה כל שורות הטמפלט (לשימוש באתחול/לאחר שחזור קאש). */
+/** Syncs the appearance of every template row (used on init / after cache restore). */
 export function syncAllRowsVisibility() {
   CONFIG.ALL_ROWS.forEach(([rowId, checkboxId]) => syncRowVisibility(rowId, checkboxId));
 }
 
-/** פותח/סוגר את פאנל "עריכת טמפלט". */
+/** Opens/closes the "edit template" panel. */
 export function toggleSettingsPanel() {
   const panel = document.getElementById('settings-panel');
   const toggleBtn = document.getElementById('stoggle');
@@ -21,7 +21,7 @@ export function toggleSettingsPanel() {
   toggleBtn.classList.toggle('open', opening);
 }
 
-/** מאפס את כל שדות הטמפלט לערכי ברירת המחדל שלהם (CONFIG.DEFAULTS). */
+/** Resets every template field to its default value (CONFIG.DEFAULTS). */
 export function resetTemplateSettings() {
   Object.entries(CONFIG.DEFAULTS).forEach(([id, value]) => {
     const el = document.getElementById(id);

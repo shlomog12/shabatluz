@@ -1,35 +1,39 @@
 # Spec — לו"ז שבת (shabatluz)
 
-תיעוד מלא של האפליקציה: **מה** היא עושה (אפיון פונקציונלי) ו**איך**
-הקוד בנוי (אפיון ארכיטקטורה). המסמכים מתארים את המצב הקיים בפועל
-בקוד (`src/`) — הארכיטקטורה המתועדת כאן **כבר מיושמת במלואה**, זה לא
-תכנון עתידי.
+Full documentation of the app: **what** it does (functional spec) and
+**how** the code is built (architecture spec). These documents describe
+the actual state of the code (`src/`) — the architecture documented here
+is **already fully implemented**, not a future plan.
 
-## מבנה
+## Structure
 
-### [`functional/`](functional/) — מה האפליקציה עושה
-אפיון התנהגות מלא, בלתי תלוי במימוש בפועל.
+### [`functional/`](functional/) — what the app does
+A complete behavior spec, independent of the actual implementation.
 
-| קובץ | תוכן |
+| File | Content |
 |---|---|
-| [00-overview.md](functional/00-overview.md) | מטרת האפליקציה, קהל היעד, אילוצים, פריסה |
-| [01-schedule-generation-rules.md](functional/01-schedule-generation-rules.md) | כללי חישוב כל שורה בהודעת הלו"ז |
-| [02-template-editing-and-persistence.md](functional/02-template-editing-and-persistence.md) | פאנל "עריכת טמפלט", שמירה/איפוס, מקור נתוני הפרשות |
+| [00-overview.md](functional/00-overview.md) | App purpose, target audience, constraints, deployment |
+| [01-schedule-generation-rules.md](functional/01-schedule-generation-rules.md) | Calculation rules for every line in the schedule message |
+| [02-template-editing-and-persistence.md](functional/02-template-editing-and-persistence.md) | The "edit template" panel, save/reset, parasha data source |
 
-### [`architecture/`](architecture/) — איך הקוד בנוי
-מבנה ה-ES modules בפועל, ללא שרת/build step, לפי עקרונות SOLID.
+### [`architecture/`](architecture/) — how the code is built
+The actual ES-module structure, no server/build step, following SOLID principles.
 
-| קובץ | תוכן |
+| File | Content |
 |---|---|
-| [00-principles-and-structure.md](architecture/00-principles-and-structure.md) | עקרונות SOLID כפי שהם באים לידי ביטוי בקוד הזה, ומבנה התיקיות |
-| [01-module-responsibilities.md](architecture/01-module-responsibilities.md) | אחריות כל מודול, ה-API הציבורי שלו, והתלויות שלו |
-| [02-data-flow.md](architecture/02-data-flow.md) | זרימת הנתונים מ-CSV ועד הודעת הוואטסאפ המוצגת |
+| [00-principles-and-structure.md](architecture/00-principles-and-structure.md) | SOLID principles as they apply to this code, and the folder structure |
+| [01-module-responsibilities.md](architecture/01-module-responsibilities.md) | Each module's responsibility, public API, and dependencies |
+| [02-data-flow.md](architecture/02-data-flow.md) | Data flow from the CSV to the displayed WhatsApp message |
 
-## איך לקרוא את זה
+## How to read this
 
-- האפיון הפונקציונלי הוא **מקור האמת** להתנהגות — אם הקוד והמסמך
-  סותרים זה את זה, צריך לעדכן את אחד מהם (ולברר איזה מהם נכון).
-- האפיון הארכיטקטוני מתעד **בחירות מכוונות**, כל אחת עם ההיגיון
-  שמאחוריה, כדי שאפשר יהיה לערער עליה מדעת בעתיד.
-- שני המסמכים כתובים בעברית, כמו הקוד עצמו (הערות, שמות שדות וטקסטים
-  באפליקציה).
+- The functional spec is the **source of truth** for behavior — if the
+  code and this document contradict each other, one of them needs to be
+  updated (figure out which one is correct).
+- The architecture spec documents **deliberate choices**, each with the
+  rationale behind it, so it can be knowingly challenged later.
+- The app's UI, generated messages, and data (`shabbat_times.csv`,
+  default labels in `src/config.js`) are all in Hebrew — that's the
+  audience the app serves. The code, comments, and these spec docs are in
+  English, matching the convention used in the sibling `calanderApp`
+  project.

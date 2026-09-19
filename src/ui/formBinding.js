@@ -1,10 +1,11 @@
 import { CONFIG } from '../config.js';
 
 /**
- * הגבול בין ה-DOM לשכבת הלוגיקה הטהורה: קורא את כל שדות הטופס
- * הרלוונטיים ומחזיר אובייקט FormState "נקי" (מספרים כבר מומרים
- * למספר, תיבות סימון כבר מומרות ל-boolean), כך ש-domain/* לא צריך
- * לדעת דבר על אלמנטים או ערכי מחרוזת גולמיים.
+ * The single boundary between the DOM and the pure logic layer: reads
+ * every relevant form field and returns a "clean" FormState object
+ * (numbers already converted to numbers, checkboxes already converted
+ * to booleans), so domain/* never has to know about elements or raw
+ * string values.
  */
 
 let allFieldIds = null;
@@ -17,14 +18,14 @@ function getAllFieldIds() {
   return allFieldIds;
 }
 
-/** ממיר מחרוזת למספר שלם; ריק/לא תקין -> 0 (לא NaN). */
+/** Converts a string to an integer; empty/invalid -> 0 (not NaN). */
 function toIntOrZero(value) {
   const n = parseInt(value, 10);
   return Number.isNaN(n) ? 0 : n;
 }
 
 /**
- * קורא את מצב הטופס הנוכחי מה-DOM.
+ * Reads the current form state from the DOM.
  * @returns {import('../domain/scheduleGenerator.js').FormState}
  */
 export function readFormState() {

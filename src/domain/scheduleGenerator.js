@@ -1,22 +1,23 @@
 import { toM, frM, r5 } from '../utils/time.js';
 
-// הפרש משוער בין זמן הדלקת הנרות המקומי (גבעת הרואה) לזה של תל אביב,
-// המוצג כשורת עזר בראש ההודעה.
+// Approximate offset between the local (Giv'at HaRoe) candle-lighting
+// time and Tel Aviv's, shown as a helper line at the top of the message.
 const CANDLE_TO_TLV_OFFSET_MINUTES = 5;
 
-// תפילת ילדים מתחילה קבוע 90 דקות אחרי תחילת שחרית.
+// Children's tefillah always starts 90 minutes after shacharit begins.
 const YELADIM_AFTER_SHACHARIT_MINUTES = 90;
 
 /**
- * @typedef {Object} FormState - ערכי טופס נוכחיים (ראו ui/formBinding.js),
- *   עם שדות מספריים כבר מומרים למספר (0 אם ריק/לא תקין) ותיבות סימון
- *   כבר מומרות ל-boolean.
+ * @typedef {Object} FormState - Current form values (see
+ *   ui/formBinding.js), with numeric fields already converted to
+ *   numbers (0 if empty/invalid) and checkboxes already converted to
+ *   booleans.
  */
 
 /**
- * מייצר את הודעת לוח הזמנים (מערך שורות + טקסט מלא) עבור פרשה נתונה
- * וערכי טופס נוכחיים. פונקציה טהורה - אינה נוגעת ב-DOM וניתנת לבדיקה
- * באופן מבודד.
+ * Builds the schedule message (array of lines + full text) for a given
+ * parasha and the current form state. Pure function - doesn't touch
+ * the DOM, and can be tested in isolation.
  * @param {import('../csv/parashaRepository.js').ParashaRecord} parasha
  * @param {FormState} form
  * @returns {{lines: string[], raw: string}}
@@ -24,26 +25,27 @@ const YELADIM_AFTER_SHACHARIT_MINUTES = 90;
 export function buildSchedule(parasha, form) {
   const { name: parashaName, candle, havdalah, mevorchim, isDst } = parasha;
 
-  // ערך שדה שתלוי בעונה (קיץ/חורף), למשל 'fix-chavura' -> fix-chavura-s/-w
+  // Season-dependent field value, e.g. 'fix-chavura' -> fix-chavura-s/-w
   const seasonVal = baseId => form[isDst ? `${baseId}-s` : `${baseId}-w`];
 
-  // --- זמני ערב שבת (יחסית להדלקת נרות) ---
+  // --- Friday evening times (relative to candle-lighting) ---
   const candleM = toM(candle);
   const tlvM = candleM + CANDLE_TO_TLV_OFFSET_MINUTES;
   const kabbalatM = r5(candleM + form['off-kabbalat']);
   const shirM = kabbalatM - form['off-shir'];
   const sunsetM = candleM + form['off-shki'];
 
-  // --- זמני שחרית שבת (תלויי עונה) ---
+  // --- Shabbat morning times (season-dependent) ---
   const chavura = seasonVal('fix-chavura');
   const shacharit = seasonVal('fix-shacharit');
   const yeladim = frM(toM(shacharit) + YELADIM_AFTER_SHACHARIT_MINUTES);
   const gdola = seasonVal('fix-gdola');
   const nashim = form['fix-nashim'];
 
-  // --- ערבית וצאת שבת ---
-  // havdalah עשוי להיות חסר (חג שחל בשבת) - במקרה כזה לא נציג את
-  // שורות ערבית/צאת שבת, במקום להציג 00:00 שגוי.
+  // --- Arvit and havdalah ---
+  // havdalah may be missing (a Yom Tov falling on Shabbat) - in that
+  // case the arvit/havdalah lines are omitted rather than showing an
+  // incorrect 00:00.
   let arvit = null;
   let tzet = null;
   if (havdalah) {
@@ -55,7 +57,7 @@ export function buildSchedule(parasha, form) {
     tzet = frM(havdalahM);
   }
 
-  // --- זמני אחר הצהריים (יחסית למנחה שבת אחה"צ) ---
+  // --- Afternoon times (relative to Shabbat afternoon mincha) ---
   const pm = form['mincha-pm'];
   const pmM = toM(pm);
   const chLimudM = pmM - form['off-chlimud'];
@@ -66,7 +68,7 @@ export function buildSchedule(parasha, form) {
     ? `${form['lbl-kabbalat']} (קרליבך) - ${frM(kabbalatM)}`
     : `${form['lbl-kabbalat']} - ${frM(kabbalatM)}`;
 
-  // --- הרכבת הודעת הוואטסאפ שורה אחר שורה ---
+  // --- Assembling the WhatsApp message, line by line ---
   const lines = [`*לו"ז שבת ${parashaName}*`, '', `זמן הדלקת נרות - ${candle} (בתל אביב ${frM(tlvM)})`];
   if (form['show-shir']) lines.push(`* ${form['lbl-shir']} - ${frM(shirM)}`);
   if (form['show-kabbalat']) lines.push(`* *${kabbalatLabel}*`);

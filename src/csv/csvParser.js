@@ -1,11 +1,12 @@
 /**
- * פרסר CSV כללי (לא תלוי בסכמת הנתונים של פרשות השבוע).
- * מודול טהור - ללא תלות ב-DOM או ב-fetch.
+ * General-purpose CSV parser (not tied to the weekly-parasha data schema).
+ * Pure module - no dependency on the DOM or fetch.
  */
 
 /**
- * מפצל שורת CSV בודדת לשדות, בתמיכה בפסיקים בתוך שדה מצוטט (כפי
- * שאקסל/Google Sheets מייצאים אותם) וגרשיים כפולים ("") כגרש בודד.
+ * Splits a single CSV line into fields, supporting commas inside a
+ * quoted field (as Excel/Google Sheets export them) and double quotes
+ * ("") as an escaped single quote.
  */
 export function splitCSVLine(line) {
   const fields = [];
@@ -31,8 +32,9 @@ export function splitCSVLine(line) {
 }
 
 /**
- * מפענח טקסט CSV מלא למערך אובייקטים (שורת כותרות + שורות נתונים).
- * שורה שמספר השדות בה לא תואם למספר הכותרות מדולגת בשקט.
+ * Parses full CSV text into an array of objects (header row + data
+ * rows). A row whose field count doesn't match the header count is
+ * silently skipped.
  */
 export function parseCSV(text) {
   const lines = text.split(/\r?\n/).filter(line => line.trim() !== '');

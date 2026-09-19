@@ -1,4 +1,4 @@
-/** מציג HTML מוכן (שכבר עבר עיבוד ב-utils/format.js) בבועת התצוגה המקדימה. */
+/** Shows pre-built HTML (already processed by utils/format.js) in the preview bubble. */
 export function showSchedulePreview(html) {
   const bubbleEl = document.getElementById('bubble');
   const btimeEl = document.getElementById('btime');
@@ -10,9 +10,9 @@ export function showSchedulePreview(html) {
 }
 
 /**
- * מחווט את כפתור "העתק לוואטסאפ". מקבל getRawText() ולא מחרוזת קבועה,
- * כדי תמיד להעתיק את ההודעה האחרונה שנוצרה, גם אם היא השתנתה מאז
- * שהכפתור חוּוַט.
+ * Wires up the "copy to WhatsApp" button. Takes getRawText() rather
+ * than a fixed string, so it always copies the latest generated
+ * message, even if it changed after the button was wired up.
  */
 export function wireCopyButton(getRawText) {
   document.getElementById('cbtn')?.addEventListener('click', () => copyToClipboard(getRawText()));

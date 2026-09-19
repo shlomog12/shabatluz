@@ -1,15 +1,17 @@
 import { toM, frM } from '../utils/time.js';
 
-// קירוב: השקיעה מוערכת כ-30 דקות אחרי זמן הדלקת הנרות המקומי. משמש
-// רק להצעה אוטומטית לשעת מנחה באמצע השבוע - ניתן לדריסה ידנית תמיד.
+// Approximation: sunset is estimated as 30 minutes after the local
+// candle-lighting time. Used only for the auto-suggested weekday
+// mincha time - always manually overridable.
 const SUNSET_AFTER_CANDLE_MINUTES = 30;
 
 /**
- * מחשב הצעה לשעת מנחה באמצע השבוע, לפי זמן הדלקת הנרות של הפרשה
- * הנבחרת ומספר הדקות הרצוי לפני השקיעה. פונקציה טהורה.
+ * Computes a suggested weekday mincha time, based on the selected
+ * parasha's candle-lighting time and the desired number of minutes
+ * before sunset. Pure function.
  * @param {string} candleTime - "HH:MM"
  * @param {number} minutesBeforeSunset
- * @returns {string} "HH:MM" מעוגל לכפולה של 5
+ * @returns {string} "HH:MM", rounded to the nearest multiple of 5
  */
 export function suggestWeekdayMincha(candleTime, minutesBeforeSunset) {
   const candleM = toM(candleTime);

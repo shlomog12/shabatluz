@@ -1,103 +1,113 @@
-# אחריות מודולים
+# Module Responsibilities
 
-לכל מודול: אחריות, API ציבורי (מה שהוא מייצא), ותלויות (מה שהוא
-מייבא). מודולים ב-`domain/` ו-`utils/` אינם תלויים ב-DOM בכלל.
+For each module: responsibility, public API (what it exports), and
+dependencies (what it imports). Modules under `domain/` and `utils/` have
+no dependency on the DOM at all.
 
 ## `src/config.js`
 
-**אחריות**: קבועי קונפיגורציה יחידים — מפתח cache, נתיב CSV, ערכי
-ברירת מחדל, רשימת שורות טמפלט, רשימת שדות מספריים.
-**מייצא**: `CONFIG`.
-**תלויות**: אין.
+**Responsibility**: single configuration constants — cache key, CSV
+path, default values, list of template rows, list of numeric fields.
+**Exports**: `CONFIG`.
+**Dependencies**: none.
 
 ## `src/utils/time.js`
 
-**אחריות**: המרות בין "HH:MM" למספר דקות מחצות, ובחזרה (עם גלישה
-תקינה סביב חצות), ועיגול לכפולת 5.
-**מייצא**: `toM(str)`, `frM(minutes)`, `r5(minutes)`.
-**תלויות**: אין.
+**Responsibility**: conversions between "HH:MM" and minutes-since-
+midnight, and back (with correct wraparound past midnight), and
+rounding to a multiple of 5.
+**Exports**: `toM(str)`, `frM(minutes)`, `r5(minutes)`.
+**Dependencies**: none.
 
 ## `src/utils/format.js`
 
-**אחריות**: בריחה מ-HTML, והמרת תחביר Markdown-קל (וואטסאפ) ל-HTML
-תצוגה.
-**מייצא**: `escapeHtml(str)`, `toWhatsAppHtml(text)`.
-**תלויות**: אין.
-**הערת אבטחה**: `toWhatsAppHtml` **תמיד** בורח מה-HTML לפני החלת
-תחביר ה-Markdown — כך שטקסט חופשי שהוזן ע"י המשתמש (שדות תווית) לא
-יכול להזריק תגיות/סקריפט לתצוגה המקדימה (`innerHTML`).
+**Responsibility**: HTML escaping, and converting light Markdown syntax
+(WhatsApp-style) to display HTML.
+**Exports**: `escapeHtml(str)`, `toWhatsAppHtml(text)`.
+**Dependencies**: none.
+**Security note**: `toWhatsAppHtml` **always** escapes HTML before
+applying the Markdown syntax - so free text entered by the user (label
+fields) can't inject tags/script into the preview (`innerHTML`).
 
 ## `src/csv/csvParser.js`
 
-**אחריות**: פענוח CSV כללי, לא תלוי סכימה. תומך בפסיקים בתוך שדה
-מצוטט ובגרשיים כפולים (`""`) כגרש בודד.
-**מייצא**: `splitCSVLine(line)`, `parseCSV(text)`.
-**תלויות**: אין.
+**Responsibility**: general-purpose CSV parsing, not tied to a specific
+schema. Supports commas inside a quoted field and double quotes (`""`)
+as an escaped single quote.
+**Exports**: `splitCSVLine(line)`, `parseCSV(text)`.
+**Dependencies**: none.
 
 ## `src/csv/parashaRepository.js`
 
-**אחריות**: טעינת קובץ ה-CSV (`fetch`) והמרתו לרשימת `ParashaRecord`
-תקינים (שורות ללא שם/הדלקת נרות מסוננות, דגלי `mevorchim`/`isDst`
-מנורמלים ל-boolean).
-**מייצא**: `loadParashaRecords(csvPath): Promise<ParashaRecord[]>`.
-**תלויות**: `csvParser.js`. משתמש ב-`fetch` הגלובלי (הצד היחיד
-במודול הזה שנוגע ב"עולם החוץ").
+**Responsibility**: loading the CSV file (`fetch`) and converting it into
+a list of valid `ParashaRecord` entries (rows missing a name/candle time
+are filtered out, `mevorchim`/`isDst` flags normalized to boolean).
+**Exports**: `loadParashaRecords(csvPath): Promise<ParashaRecord[]>`.
+**Dependencies**: `csvParser.js`. Uses the global `fetch` — the only
+place in this module that touches "the outside world."
 
 ## `src/domain/scheduleGenerator.js`
 
-**אחריות**: כל כללי החישוב וההרכבה של הודעת הלו"ז (ראו
-[functional/01](../functional/01-schedule-generation-rules.md)).
-פונקציה טהורה: אותו קלט → אותו פלט, תמיד, ללא DOM.
-**מייצא**: `buildSchedule(parasha, form): {lines, raw}`.
-**תלויות**: `utils/time.js`.
+**Responsibility**: every calculation and assembly rule for the schedule
+message (see
+[functional/01](../functional/01-schedule-generation-rules.md)). A pure
+function: same input → same output, always, with no DOM.
+**Exports**: `buildSchedule(parasha, form): {lines, raw}`.
+**Dependencies**: `utils/time.js`.
 
 ## `src/domain/minchaSuggestion.js`
 
-**אחריות**: חישוב הצעת שעת מנחה אמצע שבוע מזמן הדלקת נרות. פונקציה
-טהורה.
-**מייצא**: `suggestWeekdayMincha(candleTime, minutesBeforeSunset): string`.
-**תלויות**: `utils/time.js`.
+**Responsibility**: computing the suggested weekday mincha time from the
+candle-lighting time. Pure function.
+**Exports**: `suggestWeekdayMincha(candleTime, minutesBeforeSunset): string`.
+**Dependencies**: `utils/time.js`.
 
 ## `src/storage/settingsStore.js`
 
-**אחריות**: שמירה/שחזור/מחיקה גנרית של כל שדות הטופס ב-`localStorage`.
-לא מחליט **מתי** לשמור/למחוק (זו החלטת UI) — רק **איך**.
-**מייצא**: `saveFormToStorage()`, `loadFormFromStorage(): boolean`,
+**Responsibility**: generic save/restore/clear of every form field in
+`localStorage`. Doesn't decide **when** to save/clear (a UI decision) -
+only **how**.
+**Exports**: `saveFormToStorage()`, `loadFormFromStorage(): boolean`,
 `clearStoredSettings()`.
-**תלויות**: `config.js` (מפתח ה-cache). נוגע ב-DOM (סורק
-`input`/`select` בדף) וב-`localStorage`.
+**Dependencies**: `config.js` (the cache key). Touches the DOM (scans
+`input`/`select` elements on the page) and `localStorage`.
 
 ## `src/ui/formBinding.js`
 
-**אחריות**: הגבול היחיד בין ה-DOM לבין `FormState` "נקי" שמשמש את
-שכבת הדומיין — שדות מספריים כבר מומרים למספר (0 אם ריק/לא תקין),
-תיבות סימון כבר מומרות ל-boolean.
-**מייצא**: `readFormState(): FormState`.
-**תלויות**: `config.js` (רשימת שדות ורשימת שדות מספריים). נוגע ב-DOM.
+**Responsibility**: the single boundary between the DOM and the clean
+`FormState` used by the domain layer - numeric fields already converted
+to numbers (0 if empty/invalid), checkboxes already converted to
+booleans.
+**Exports**: `readFormState(): FormState`.
+**Dependencies**: `config.js` (field list and numeric field list).
+Touches the DOM.
 
 ## `src/ui/templatePanel.js`
 
-**אחריות**: פתיחה/סגירה של פאנל ההגדרות, סנכרון מראה שורה לפי מצב
-תיבת הסימון שלה, ואיפוס שדות הטמפלט לברירת המחדל.
-**מייצא**: `syncRowVisibility(rowId, checkboxId)`,
+**Responsibility**: opening/closing the settings panel, syncing a row's
+appearance to its checkbox state, and resetting template fields to their
+defaults.
+**Exports**: `syncRowVisibility(rowId, checkboxId)`,
 `syncAllRowsVisibility()`, `toggleSettingsPanel()`,
 `resetTemplateSettings()`.
-**תלויות**: `config.js`. נוגע ב-DOM.
+**Dependencies**: `config.js`. Touches the DOM.
 
 ## `src/ui/preview.js`
 
-**אחריות**: הצגת HTML מוכן בבועת התצוגה המקדימה, וחיווט כפתור
-ההעתקה (כולל משוב חזותי זמני). **לא** בונה את ה-HTML בעצמו — מקבל
-אותו מוכן מ-`utils/format.js` דרך `app.js`.
-**מייצא**: `showSchedulePreview(html)`, `wireCopyButton(getRawText)`.
-**תלויות**: אין (מקבל callback, לא תלוי ישירות בשכבת הדומיין). נוגע
-ב-DOM וב-`navigator.clipboard`.
+**Responsibility**: showing pre-built HTML in the preview bubble, and
+wiring up the copy button (including temporary visual feedback). Does
+**not** build the HTML itself - receives it ready-made from
+`utils/format.js` via `app.js`.
+**Exports**: `showSchedulePreview(html)`, `wireCopyButton(getRawText)`.
+**Dependencies**: none (receives a callback, not directly coupled to the
+domain layer). Touches the DOM and `navigator.clipboard`.
 
 ## `src/app.js`
 
-**אחריות**: נקודת הכניסה היחידה שמכירה את כל השכבות יחד. מחזיק את
-מקור האמת לנתוני הפרשות שנטענו (`parashaRecords`), מחווט אירועים,
-ומתזמר את הזרימה: בחירת פרשה → קריאת מצב טופס → חישוב טהור → הצגה +
-שמירה. אינו מכיל לוגיקת חישוב או פענוח בעצמו — רק קריאות לשכבות
-האחרות.
-**תלויות**: כל שאר המודולים.
+**Responsibility**: the single entry point that knows about all the
+layers together. Holds the loaded parasha data (`parashaRecords`) as the
+source of truth, wires up events, and orchestrates the flow: parasha
+selection → read form state → pure calculation → display + save. Contains
+no calculation or parsing logic of its own - only calls into the other
+layers.
+**Dependencies**: every other module.

@@ -1,46 +1,51 @@
-# סקירה כללית
+# Overview
 
-## מה זו האפליקציה
+## What this app is
 
-כלי סטטי (ללא שרת, ללא build step) המיועד לגבאי/אחראי לו"ז תפילות
-ואירועים ביישוב גבעת הרואה. תפקידו היחיד: לחסוך את ההקלדה השבועית
-החוזרת של הודעת לו"ז שבת בוואטסאפ — הגבאי בוחר פרשה ומזין שעת מנחה,
-והאפליקציה מייצרת הודעה מוכנה להעתקה, מעוצבת בתחביר הדגשה של וואטסאפ
-(`*מודגש*`, `_נטוי_`).
+A static tool (no server, no build step) for the person responsible for
+prayer/event scheduling in the Giv'at HaRoe community. Its sole purpose:
+save the recurring weekly typing of the WhatsApp Shabbat schedule message
+— the admin picks a parasha and enters a mincha time, and the app
+generates a ready-to-copy message, formatted with WhatsApp's emphasis
+syntax (`*bold*`, `_italic_`).
 
-## קהל היעד
+## Target audience
 
-משתמש יחיד או מספר קטן של גבאים, לא קהל רחב. האפליקציה אינה דורשת
-התחברות/הרשאות — כל מי שנכנס לקישור יכול לערוך את הטמפלט ולייצר
-הודעות. זהו אילוץ מכוון (ראו [02](02-template-editing-and-persistence.md))
-ולא פרצת אבטחה: אין נתונים רגישים, ואין צד־שרת שאפשר לפגוע בו.
+A single user, or a small number of admins — not a broad audience. The
+app requires no login/authorization — anyone with the link can edit the
+template and generate messages. This is a deliberate constraint (see
+[02](02-template-editing-and-persistence.md)), not a security hole:
+there's no sensitive data, and no server-side to attack.
 
-## זרימת השימוש הבסיסית
+## Basic usage flow
 
-1. נכנסים לאתר. רשימת הפרשות נטענת אוטומטית מקובץ CSV.
-2. בוחרים פרשה מהרשימה.
-3. שעת המנחה של אמצע השבוע מוצעת אוטומטית (לפי זמן הדלקת הנרות של
-   הפרשה); שעת מנחה שבת אחה"צ מוזנת ידנית (או נשמרת מהפעם הקודמת).
-4. ההודעה נוצרת אוטומטית עם כל שינוי, ומוצגת בתצוגה מקדימה בסגנון
-   בועת וואטסאפ.
-5. לוחצים "העתק לוואטסאפ" ומדביקים בקבוצה.
+1. Open the site. The parasha list loads automatically from a CSV file.
+2. Select a parasha from the list.
+3. The weekday mincha time is suggested automatically (based on the
+   parasha's candle-lighting time); the Shabbat afternoon mincha time is
+   entered manually (or restored from last time).
+4. The message regenerates automatically on every change, shown in a
+   WhatsApp-bubble-style preview.
+5. Click "copy to WhatsApp" and paste into the group.
 
-שינויים חד-פעמיים (למשל שינוי שעת שיעור לנשים לשבוע הזה בלבד) נעשים
-דרך פאנל "עריכת טמפלט" המקופל כברירת מחדל — ראו
-[02](02-template-editing-and-persistence.md).
+One-off changes (e.g. moving this week's women's shiur to a different
+time) are made through the "edit template" panel, collapsed by default —
+see [02](02-template-editing-and-persistence.md).
 
-## אילוצים ובחירות מכוונות
+## Constraints and deliberate choices
 
-- **ללא שרת, ללא build step**: HTML/CSS/JS סטטיים בלבד, נטענים
-  ישירות ע"י הדפדפן (ES modules טבעיים, `<script type="module">`).
-  אפשר לפרוס את התיקייה כמות שהיא בכל שירות אחסון סטטי.
-- **ללא בסיס נתונים**: מקור הנתונים היחיד הוא קובץ `shabbat_times.csv`
-  הנטען פעם אחת בכל טעינת דף. העדפות המשתמש (הטמפלט) נשמרות
-  ב-`localStorage` של הדפדפן בלבד — לא מסונכרנות בין מכשירים.
-- **תלוי-שנה**: קובץ ה-CSV מכיל זמנים ספציפיים לשנה עברית נתונה, ויש
-  לעדכן אותו מדי שנה (ראו [02](02-template-editing-and-persistence.md)).
+- **No server, no build step**: static HTML/CSS/JS only, loaded directly
+  by the browser (native ES modules, `<script type="module">`). The
+  folder can be deployed as-is to any static hosting service.
+- **No database**: the only data source is `shabbat_times.csv`, loaded
+  once per page load. User preferences (the template) are saved only in
+  the browser's `localStorage` — not synced across devices.
+- **Year-dependent**: the CSV file contains times specific to a given
+  Hebrew year, and needs to be updated every year (see
+  [02](02-template-editing-and-persistence.md)).
 
-## פריסה (deploy)
+## Deployment
 
-אתר סטטי טהור — כל תיקיית הפרויקט נפרסת כמות שהיא בכל שירות אחסון
-סטטי (Netlify, GitHub Pages וכו'). אין משתני סביבה, אין secrets.
+Pure static site — the whole project folder is deployed as-is to any
+static hosting service (Netlify, GitHub Pages, etc.). No environment
+variables, no secrets.

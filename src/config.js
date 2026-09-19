@@ -1,12 +1,12 @@
 /**
- * הגדרות גלובליות של האפליקציה.
- * - CACHE_KEY / CSV_FILE_PATH: מפתחות אחסון וטעינת נתונים.
- * - DEFAULTS: ערכי ברירת המחדל לכל שדה טקסט/מספר/שעה/בחירה בפאנל
- *   "עריכת טמפלט" (בשימוש על ידי resetTemplateSettings()).
- * - ALL_ROWS: זוגות [row-id, checkbox-id] של שורות הטמפלט, לצורך
- *   סנכרון מצב "מושבת" (disabled) ושחזור מה-cache.
- * - UNCHECKED_BY_DEFAULT: מזהי checkbox שאמורים להיות לא מסומנים
- *   כברירת מחדל; כל שאר השורות ב-ALL_ROWS מסומנות כברירת מחדל.
+ * Global app configuration.
+ * - CACHE_KEY / CSV_FILE_PATH: storage key and data source path.
+ * - DEFAULTS: default values for every text/number/time/select field
+ *   in the "edit template" panel (used by resetTemplateSettings()).
+ * - ALL_ROWS: [row-id, checkbox-id] pairs for every template row, used
+ *   to sync "disabled" visual state and restore from cache.
+ * - UNCHECKED_BY_DEFAULT: checkbox ids that should be unchecked by
+ *   default; every other row in ALL_ROWS is checked by default.
  */
 export const CONFIG = {
   CACHE_KEY: 'givat_haroe_schedule_v1',

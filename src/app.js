@@ -14,16 +14,17 @@ import {
 import { saveFormToStorage, loadFormFromStorage, clearStoredSettings } from './storage/settingsStore.js';
 
 /**
- * נקודת הכניסה של האפליקציה: מחברת בין שכבת הנתונים (CSV), שכבת
- * הלוגיקה הטהורה (domain/*) ושכבת ה-DOM (ui/*, storage/*).
- * זהו המודול היחיד שמכיר את כל השכבות יחד.
+ * The app's entry point: wires together the data layer (CSV), the
+ * pure logic layer (domain/*), and the DOM layer (ui/*, storage/*).
+ * This is the only module that knows about all the layers at once.
  */
 
-// מקור האמת היחיד לנתוני הפרשות (במקום להטמיע אותם כ-dataset על
-// אלמנטי <option> ב-DOM, כפי שהיה בגרסה הקודמת).
+// The single source of truth for parasha data (instead of embedding it
+// as dataset attributes on <option> elements in the DOM, as in the
+// previous version).
 let parashaRecords = [];
 
-// ההודעה הגולמית (טקסט וואטסאפ) שנוצרה לאחרונה, לשימוש כפתור ההעתקה.
+// The raw (WhatsApp text) message most recently generated, used by the copy button.
 let lastGeneratedMessage = '';
 
 function findParasha(name) {
@@ -55,7 +56,7 @@ function generateSchedule() {
   showSchedulePreview(toWhatsAppHtml(raw));
 }
 
-/** מייצר מחדש ושומר לקאש, אך רק אם כבר נבחרה פרשה. */
+/** Regenerates and saves to cache, but only once a parasha has been selected. */
 function generateAndPersist() {
   if (!document.getElementById('parasha')?.value) return;
   generateSchedule();
@@ -104,7 +105,7 @@ function bindEvents() {
   document.getElementById('clear-cache-btn')?.addEventListener('click', handleClearCache);
   document.getElementById('reset-link')?.addEventListener('click', handleResetTemplate);
 
-  // checkbox "הצג שורה" של כל שורת טמפלט: מסנכרן מראה + מייצר מחדש
+  // Each template row's "show row" checkbox: syncs appearance + regenerates
   CONFIG.ALL_ROWS.forEach(([rowId, checkboxId]) => {
     document.getElementById(checkboxId)?.addEventListener('change', () => {
       syncRowVisibility(rowId, checkboxId);
@@ -112,7 +113,7 @@ function bindEvents() {
     });
   });
 
-  // כל שאר שדות פאנל "עריכת טמפלט" (טקסט/מספר/שעה/בחירה) רק מייצרים מחדש
+  // Every other field in the "edit template" panel (text/number/time/select) just regenerates
   document.querySelectorAll(
     '#settings-panel input[type="text"], #settings-panel input[type="number"], #settings-panel input[type="time"]'
   ).forEach(el => el.addEventListener('input', generateAndPersist));
@@ -135,7 +136,7 @@ async function init() {
       generateSchedule();
     }
   } catch (error) {
-    console.error('נכשלה טעינת נתוני הפרשות מה-CSV:', error);
+    console.error('Failed to load parasha data from CSV:', error);
     showLoadError();
   }
 }
