@@ -20,238 +20,203 @@
 <body>
   <div class="page-wrap">
 
+    <!-- כותרת -->
     <header class="site-header">
       <div class="yishuv">גבעת הרואה</div>
       <h1>לוח זמנים לשבת</h1>
       <div class="divider">✦</div>
     </header>
 
+    <!-- טופס ראשי: בחירת פרשה ושעות מנחה -->
     <div class="panel">
       <div class="panel-title">🕯️ בחר פרשה ושעת מנחה</div>
-
-      <div class="field"
-        style="margin-bottom: 15px; flex-direction: row; gap: 20px; align-items: center; justify-content: center; background: var(--gold-pale); padding: 10px; border-radius: 8px;">
-        <label style="font-weight: bold; margin: 0;">הגדרת עונה:</label>
-        <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
-          <input type="radio" name="season" value="summer" checked onchange="autoGen()"> שעון קיץ
-        </label>
-        <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
-          <input type="radio" name="season" value="winter" onchange="autoGen()"> שעון חורף
-        </label>
+      <div id="load-error" class="load-error" style="display:none;">
+        שגיאה בטעינת נתוני הפרשות. נסו לרענן את הדף.
       </div>
 
       <div class="form-row">
         <div class="field">
-          <label>פרשת השבוע</label>
-          <select id="parasha" onchange="updateWkMincha(); autoGen();">
+          <label for="parasha">פרשת השבוע</label>
+          <select id="parasha">
             <option value="">-- בחר פרשה --</option>
-            <option value="תזריע מצורע" data-c="18:44" data-h="19:48">תזריע מצורע</option>
-            <option value="אחרי מות קדושים" data-c="18:49" data-h="19:54">אחרי מות קדושים</option>
-            <option value="אמור" data-c="18:54" data-h="20:00">אמור</option>
-            <option value="בהר בחוקותי" data-c="18:59" data-h="20:05">בהר בחוקותי</option>
-            <option value="במדבר" data-c="19:04" data-h="20:11" data-m="1">במדבר</option>
-            <option value="נשא" data-c="19:09" data-h="20:16">נשא</option>
-            <option value="בהעלותך" data-c="19:14" data-h="20:21">בהעלותך</option>
-            <option value="שלח" data-c="19:18" data-h="20:25">שלח</option>
-            <option value="קרח" data-c="19:21" data-h="20:29">קרח</option>
-            <option value="חוקת" data-c="19:23" data-h="20:31">חוקת</option>
-            <option value="בלק" data-c="19:24" data-h="20:32">בלק</option>
-            <option value="פינחס" data-c="19:24" data-h="20:32">פינחס</option>
-            <option value="מטות מסעי" data-c="19:23" data-h="20:30" data-m="1">מטות מסעי</option>
-            <option value="דברים חזון" data-c="19:21" data-h="20:27">דברים חזון</option>
-            <option value="ואתחנן" data-c="19:17" data-h="20:22">ואתחנן</option>
-            <option value="עקב" data-c="19:12" data-h="20:16">עקב</option>
-            <option value="ראה" data-c="19:06" data-h="20:10" data-m="1">ראה</option>
-            <option value="שופטים" data-c="18:59" data-h="20:02">שופטים</option>
-            <option value="כי תצא" data-c="18:51" data-h="19:54">כי תצא</option>
-            <option value="כי תבוא" data-c="18:43" data-h="19:45">כי תבוא</option>
-            <option value="נצבים וילך" data-c="18:34" data-h="19:35" data-m="1">נצבים וילך</option>
           </select>
         </div>
         <div class="field">
-          <label>שעת מנחה שבת אחה"צ</label>
-          <input type="time" id="mincha-pm" step="300" value="18:00" oninput="autoGen()">
+          <label for="mincha-pm">שעת מנחה שבת אחה"צ</label>
+          <input type="time" id="mincha-pm" step="300" value="18:00">
         </div>
       </div>
 
       <div class="form-row">
         <div class="field">
-          <label>שעת מנחה אמצ"ש</label>
-          <input type="time" id="mincha-week" step="300" value="13:30" oninput="autoGen()">
+          <label for="mincha-week">שעת מנחה אמצ"ש</label>
+          <input type="time" id="mincha-week" step="300" value="13:30">
         </div>
       </div>
 
     </div>
 
-    <button class="settings-toggle" id="stoggle" onclick="toggleSettings()">
+    <!-- פאנל "עריכת טמפלט": מקופל כברירת מחדל, נפתח דרך הכפתור הזה -->
+    <button class="settings-toggle" id="stoggle">
       <span>⚙️ &nbsp;עריכת טמפלט – שנה זמנים, כותרות, הסתר שורות</span>
       <span class="arrow">▼</span>
     </button>
 
     <div class="panel" id="settings-panel" style="display:none;">
-      <div class="panel-title" style="justify-content:space-between; flex-wrap: wrap; gap: 10px;">
+      <div class="panel-title settings-panel-header">
         <span>✏️ עריכת טמפלט</span>
-        <div style="display: flex; align-items: center;">
-          <button class="clear-cache-btn" onclick="clearCache()">מחיקת קאש ואיפוס כללי</button>
-          <button class="reset-link" onclick="resetSettings()">↺ איפוס טקסטים</button>
+        <div class="settings-actions">
+          <button class="clear-cache-btn" id="clear-cache-btn">מחיקת קאש ואיפוס כללי</button>
+          <button class="reset-link" id="reset-link">↺ איפוס טקסטים</button>
         </div>
       </div>
 
+      <!-- ערב שבת: שיר השירים, קבלת שבת, שקיעה -->
       <div class="tmpl-section">
         <div class="tmpl-section-label">ערב שבת</div>
         <div class="tmpl-row" id="row-shir">
-          <input type="checkbox" class="tmpl-check" id="show-shir" checked
-            onchange="syncRow('row-shir','show-shir'); autoGen()">
-          <div class="tmpl-label"><input type="text" id="lbl-shir" value="שיר השירים" oninput="autoGen()"></div>
+          <input type="checkbox" class="tmpl-check" id="show-shir" checked>
+          <div class="tmpl-label"><input type="text" id="lbl-shir" value="שיר השירים"></div>
           <div class="tmpl-ctrl">
             <span class="badge">דק' לפני קבלת שבת</span>
-            <input type="number" id="off-shir" value="10" min="0" max="90" oninput="autoGen()">
+            <input type="number" id="off-shir" value="10" min="0" max="90">
             <span>דק'</span>
           </div>
         </div>
         <div class="tmpl-row" id="row-kabbalat">
-          <input type="checkbox" class="tmpl-check" id="show-kabbalat" checked
-            onchange="syncRow('row-kabbalat','show-kabbalat'); autoGen()">
-          <div class="tmpl-label"><input type="text" id="lbl-kabbalat" value="מנחה וקבלת שבת" oninput="autoGen()"></div>
+          <input type="checkbox" class="tmpl-check" id="show-kabbalat" checked>
+          <div class="tmpl-label"><input type="text" id="lbl-kabbalat" value="מנחה וקבלת שבת"></div>
           <div class="tmpl-ctrl">
             <span class="badge">דק' אחרי הדלקת נרות</span>
-            <input type="number" id="off-kabbalat" value="15" min="0" max="60" oninput="autoGen()">
+            <input type="number" id="off-kabbalat" value="15" min="0" max="60">
             <span>דק'</span>
           </div>
         </div>
         <div class="tmpl-row" id="row-shki">
-          <input type="checkbox" class="tmpl-check" id="show-shki" checked
-            onchange="syncRow('row-shki','show-shki'); autoGen()">
-          <div class="tmpl-label"><input type="text" id="lbl-shki" value="שקיעה" oninput="autoGen()"></div>
+          <input type="checkbox" class="tmpl-check" id="show-shki" checked>
+          <div class="tmpl-label"><input type="text" id="lbl-shki" value="שקיעה"></div>
           <div class="tmpl-ctrl">
             <span class="badge">דק' אחרי הדלקת נרות</span>
-            <input type="number" id="off-shki" value="30" min="0" max="90" oninput="autoGen()">
+            <input type="number" id="off-shki" value="30" min="0" max="90">
             <span>דק'</span>
           </div>
         </div>
       </div>
 
+      <!-- שחרית שבת: כל שורה כאן תלוית עונה (קיץ/חורף), נקבעת אוטומטית מה-CSV -->
       <div class="tmpl-section">
         <div class="tmpl-section-label">שחרית שבת — זמן קיץ / זמן חורף</div>
         <div class="tmpl-row" id="row-chavura">
-          <input type="checkbox" class="tmpl-check" id="show-chavura" checked
-            onchange="syncRow('row-chavura','show-chavura'); autoGen()">
-          <div class="tmpl-label"><input type="text" id="lbl-chavura" value="חבורא בעין איה" oninput="autoGen()"></div>
+          <input type="checkbox" class="tmpl-check" id="show-chavura" checked>
+          <div class="tmpl-label"><input type="text" id="lbl-chavura" value="חבורא בעין איה"></div>
           <div class="tmpl-ctrl">
             <span class="badge">קיץ</span>
-            <input type="time" id="fix-chavura-s" value="07:30" oninput="autoGen()">
+            <input type="time" id="fix-chavura-s" value="07:30">
             <span class="badge">חורף</span>
-            <input type="time" id="fix-chavura-w" value="08:00" oninput="autoGen()">
+            <input type="time" id="fix-chavura-w" value="08:00">
           </div>
         </div>
         <div class="tmpl-row" id="row-shacharit">
-          <input type="checkbox" class="tmpl-check" id="show-shacharit" checked
-            onchange="syncRow('row-shacharit','show-shacharit'); autoGen()">
-          <div class="tmpl-label"><input type="text" id="lbl-shacharit" value="שחרית" oninput="autoGen()"></div>
+          <input type="checkbox" class="tmpl-check" id="show-shacharit" checked>
+          <div class="tmpl-label"><input type="text" id="lbl-shacharit" value="שחרית"></div>
           <div class="tmpl-ctrl">
             <span class="badge">קיץ</span>
-            <input type="time" id="fix-shacharit-s" value="08:30" oninput="autoGen()">
+            <input type="time" id="fix-shacharit-s" value="08:30">
             <span class="badge">חורף</span>
-            <input type="time" id="fix-shacharit-w" value="08:00" oninput="autoGen()">
+            <input type="time" id="fix-shacharit-w" value="08:00">
           </div>
         </div>
         <div class="tmpl-row" id="row-yeladim">
-          <input type="checkbox" class="tmpl-check" id="show-yeladim" checked
-            onchange="syncRow('row-yeladim','show-yeladim'); autoGen()">
-          <div class="tmpl-label"><input type="text" id="lbl-yeladim" value="תפילת ילדים" oninput="autoGen()"></div>
+          <input type="checkbox" class="tmpl-check" id="show-yeladim" checked>
+          <div class="tmpl-label"><input type="text" id="lbl-yeladim" value="תפילת ילדים"></div>
           <div class="tmpl-ctrl">
             <span class="badge">קיץ</span>
-            <input type="time" id="fix-yeladim-s" value="10:00" oninput="autoGen()">
+            <input type="time" id="fix-yeladim-s" value="10:00">
             <span class="badge">חורף</span>
-            <input type="time" id="fix-yeladim-w" value="09:30" oninput="autoGen()">
+            <input type="time" id="fix-yeladim-w" value="09:30">
           </div>
         </div>
         <div class="tmpl-row" id="row-gdola">
-          <input type="checkbox" class="tmpl-check" id="show-gdola" checked
-            onchange="syncRow('row-gdola','show-gdola'); autoGen()">
-          <div class="tmpl-label"><input type="text" id="lbl-gdola" value="מנחה גדולה" oninput="autoGen()"></div>
+          <input type="checkbox" class="tmpl-check" id="show-gdola" checked>
+          <div class="tmpl-label"><input type="text" id="lbl-gdola" value="מנחה גדולה"></div>
           <div class="tmpl-ctrl">
             <span class="badge">קיץ</span>
-            <input type="time" id="fix-gdola-s" value="13:15" oninput="autoGen()">
+            <input type="time" id="fix-gdola-s" value="13:15">
             <span class="badge">חורף</span>
-            <input type="time" id="fix-gdola-w" value="12:30" oninput="autoGen()">
+            <input type="time" id="fix-gdola-w" value="12:30">
           </div>
         </div>
       </div>
 
+      <!-- אחר הצהריים: שעות קבועות, או יחסית לשעת המנחה שהוגדרה למעלה -->
       <div class="tmpl-section">
         <div class="tmpl-section-label">אחר הצהריים — שעה קבועה / יחסי למנחה</div>
         <div class="tmpl-row" id="row-nashim">
-          <input type="checkbox" class="tmpl-check" id="show-nashim" checked
-            onchange="syncRow('row-nashim','show-nashim'); autoGen()">
-          <div class="tmpl-label"><input type="text" id="lbl-nashim" value="שיעור לנשים" oninput="autoGen()"></div>
+          <input type="checkbox" class="tmpl-check" id="show-nashim" checked>
+          <div class="tmpl-label"><input type="text" id="lbl-nashim" value="שיעור לנשים"></div>
           <div class="tmpl-ctrl">
             <span class="badge">שעה</span>
-            <input type="time" id="fix-nashim" value="17:00" oninput="autoGen()">
+            <input type="time" id="fix-nashim" value="17:00">
           </div>
         </div>
         <div class="tmpl-row" id="row-chlimud">
-          <input type="checkbox" class="tmpl-check" id="show-chlimud" checked
-            onchange="syncRow('row-chlimud','show-chlimud'); autoGen()">
-          <div class="tmpl-label"><input type="text" id="lbl-chlimud" value="חבורת לימוד פרשת שבוע" oninput="autoGen()">
+          <input type="checkbox" class="tmpl-check" id="show-chlimud" checked>
+          <div class="tmpl-label"><input type="text" id="lbl-chlimud" value="חבורת לימוד פרשת שבוע">
           </div>
           <div class="tmpl-ctrl">
             <span class="badge">דק' לפני מנחה</span>
-            <input type="number" id="off-chlimud" value="60" min="0" max="180" oninput="autoGen()">
+            <input type="number" id="off-chlimud" value="60" min="0" max="180">
             <span>דק'</span>
           </div>
         </div>
         <div class="tmpl-row" id="row-oneg">
-          <input type="checkbox" class="tmpl-check" id="show-oneg" checked
-            onchange="syncRow('row-oneg','show-oneg'); autoGen()">
-          <div class="tmpl-label"><input type="text" id="lbl-oneg" value="עונג שבת לילדים" oninput="autoGen()"></div>
+          <input type="checkbox" class="tmpl-check" id="show-oneg" checked>
+          <div class="tmpl-label"><input type="text" id="lbl-oneg" value="עונג שבת לילדים"></div>
           <div class="tmpl-ctrl">
             <span class="badge">דק' לפני מנחה</span>
-            <input type="number" id="off-oneg" value="35" min="0" max="180" oninput="autoGen()">
+            <input type="number" id="off-oneg" value="35" min="0" max="180">
             <span>דק'</span>
           </div>
         </div>
         <div class="tmpl-row sub" id="row-livui">
-          <input type="checkbox" class="tmpl-check" id="show-livui"
-            onchange="syncRow('row-livui','show-livui'); autoGen()">
+          <input type="checkbox" class="tmpl-check" id="show-livui">
           <div class="tmpl-label"><span class="sub-desc">↳ הוסף תווית <strong>(בליווי הורה/מבוגר)</strong> אחרי שעת עונג
               שבת</span></div>
         </div>
         <div class="tmpl-row" id="row-horim">
-          <input type="checkbox" class="tmpl-check" id="show-horim" checked
-            onchange="syncRow('row-horim','show-horim'); autoGen()">
-          <div class="tmpl-label"><input type="text" id="lbl-horim" value="לימוד הורים וילדים" oninput="autoGen()">
+          <input type="checkbox" class="tmpl-check" id="show-horim" checked>
+          <div class="tmpl-label"><input type="text" id="lbl-horim" value="לימוד הורים וילדים">
           </div>
           <div class="tmpl-ctrl">
             <span class="badge">דק' לפני מנחה</span>
-            <input type="number" id="off-horim" value="20" min="0" max="180" oninput="autoGen()">
+            <input type="number" id="off-horim" value="20" min="0" max="180">
             <span>דק'</span>
           </div>
         </div>
       </div>
 
+      <!-- הגדרות ערבית וצאת שבת -->
       <div class="tmpl-section">
         <div class="tmpl-section-label">הגדרות אחרות</div>
         <div class="tmpl-row" id="row-mincha-sunset">
-          <input type="checkbox" class="tmpl-check" id="show-mincha-sunset" checked
-            onchange="syncRow('row-mincha-sunset','show-mincha-sunset'); autoGen()">
+          <input type="checkbox" class="tmpl-check" id="show-mincha-sunset" checked>
           <div class="tmpl-label"><span class="sub-desc">מנחה באמצע שבוע – דקות לפני שקיעה</span></div>
           <div class="tmpl-ctrl">
-            <input type="number" id="mincha-minutes-before-sunset" value="20" min="0" max="60" oninput="autoGen()">
+            <input type="number" id="mincha-minutes-before-sunset" value="20" min="0" max="60">
             <span>דק'</span>
           </div>
         </div>
         <div class="tmpl-row">
           <div class="tmpl-label"><span class="sub-desc">ערבית – שינוי ביחס לצאת שבת</span></div>
           <div class="tmpl-ctrl">
-            <input type="number" id="arvit-offset-minutes" value="0" min="-60" max="60" oninput="autoGen()">
+            <input type="number" id="arvit-offset-minutes" value="0" min="-60" max="60">
             <span>דק'</span>
           </div>
         </div>
         <div class="tmpl-row">
           <div class="tmpl-label"><span class="sub-desc">עיגול זמן לערבית של צאת שבת</span></div>
           <div class="tmpl-ctrl">
-            <select id="arvit-round" onchange="autoGen()">
+            <select id="arvit-round">
               <option value="none">אין עיגול</option>
               <option value="up">לעגל למעלה</option>
               <option value="down">לעגל למטה</option>
@@ -260,35 +225,35 @@
         </div>
       </div>
 
+      <!-- תפילות אמצע שבוע (א'-ה', שישי) -->
       <div class="tmpl-section">
         <div class="tmpl-section-label">תפילות אמצע שבוע</div>
         <div class="tmpl-row" id="row-wk-shach">
-          <input type="checkbox" class="tmpl-check" id="show-wk-shach" checked
-            onchange="syncRow('row-wk-shach','show-wk-shach'); autoGen()">
+          <input type="checkbox" class="tmpl-check" id="show-wk-shach" checked>
           <div class="tmpl-label"><span class="sub-desc">שחרית (א–ה / יום ו')</span></div>
           <div class="tmpl-ctrl">
             <span class="badge">א–ה</span>
-            <input type="time" id="fix-wk-shach" value="06:20" oninput="autoGen()">
+            <input type="time" id="fix-wk-shach" value="06:20">
             <span class="badge">ו'</span>
-            <input type="time" id="fix-wk-fri" value="06:30" oninput="autoGen()">
+            <input type="time" id="fix-wk-fri" value="06:30">
           </div>
         </div>
         <div class="tmpl-row" id="row-wk-arvit">
-          <input type="checkbox" class="tmpl-check" id="show-wk-arvit" checked
-            onchange="syncRow('row-wk-arvit','show-wk-arvit'); autoGen()">
+          <input type="checkbox" class="tmpl-check" id="show-wk-arvit" checked>
           <div class="tmpl-label"><span class="sub-desc">ערבית</span></div>
           <div class="tmpl-ctrl">
-            <input type="time" id="fix-wk-arvit" value="20:15" oninput="autoGen()">
+            <input type="time" id="fix-wk-arvit" value="20:15">
           </div>
         </div>
       </div>
 
     </div>
 
+    <!-- תצוגה מקדימה של ההודעה המוכנה להעתקה לוואטסאפ -->
     <div class="preview-wrap" id="pw">
       <div class="preview-header">
         <span>תצוגה מקדימה – וואטסאפ</span>
-        <button class="btn-copy" id="cbtn" onclick="doCopy()">
+        <button class="btn-copy" id="cbtn">
           <svg width="15" height="15" fill="none" viewBox="0 0 24 24">
             <path
               d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"

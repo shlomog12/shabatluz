@@ -1,3 +1,14 @@
+/**
+ * הגדרות האתר: קבוע יחיד שנטען לפני index.js.
+ * - CACHE_KEY / CSV_FILE_PATH: מפתחות אחסון וטעינת נתונים.
+ * - DEFAULTS: ערכי ברירת המחדל לכל שדה בפאנל "עריכת טמפלט"
+ *   (בשימוש על ידי resetSettings() ב-index.js).
+ * - ALL_ROWS: זוגות [row-id, checkbox-id] של שורות הטמפלט, לצורך
+ *   סנכרון מצב "מושבת" (disabled) ושחזור מה-cache.
+ * - UNCHECKED_BY_DEFAULT: מזהי checkbox שאמורים להיות לא מסומנים
+ *   כברירת מחדל (בשימוש על ידי resetSettings(); כל שאר השורות
+ *   ב-ALL_ROWS מסומנות כברירת מחדל).
+ */
 const CONFIG = {
   CACHE_KEY: 'givat_haroe_schedule_v1',
   CSV_FILE_PATH: 'shabbat_times.csv',
@@ -54,5 +65,6 @@ const CONFIG = {
     ['row-mincha-sunset', 'show-mincha-sunset'],
     ['row-wk-shach', 'show-wk-shach'],
     ['row-wk-arvit', 'show-wk-arvit']
-  ]
+  ],
+  UNCHECKED_BY_DEFAULT: ['show-livui']
 };
