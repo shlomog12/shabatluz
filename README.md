@@ -1,39 +1,61 @@
 # לו"ז שבת – גבעת הרואה (shabatluz)
 
-A static tool (no server/build step) that generates a weekly Shabbat
-schedule message, ready to paste into WhatsApp, based on candle-lighting/
-havdalah times from a CSV file. Built for the Giv'at HaRoe community — the
-app's UI and generated messages are in Hebrew.
+כלי סטטי (בלי שרת/build step) שמייצר הודעת לוח זמנים שבועית לשבת,
+מוכנה להדבקה בוואטסאפ, על בסיס זמני הדלקת נרות/הבדלה מקובץ CSV. נבנה
+עבור קהילת גבעת הרואה — ממשק האפליקציה וההודעות שהיא מייצרת בעברית.
 
-## Usage
+🔗 **אתר חי**: https://shabatluz.netlify.app
 
-1. Select a parasha from the list (the list and times are loaded from `shabbat_times.csv`).
-2. Set the Shabbat afternoon mincha time and the weekday mincha time.
-3. Optionally open "עריכת טמפלט" (edit template) to change row labels, show/hide rows, and adjust offsets/fixed times per season (summer/winter).
-4. The message is generated automatically and shown in a WhatsApp-style preview; the "copy to WhatsApp" button copies it to the clipboard.
-5. All settings are saved automatically to the browser's localStorage and reloaded next time.
+## שימוש
 
-## Project structure
+1. בוחרים פרשה מהרשימה (הרשימה והזמנים נטענים מ-`shabbat_times.csv`).
+2. קובעים שעת מנחה לשבת אחה"צ ולאמצע השבוע.
+3. אפשר לפתוח את "עריכת טמפלט" כדי לשנות כותרות שורות, להסתיר/להציג
+   שורות, ולכוון היסטים (offsets) ושעות קבועות לפי עונה (קיץ/חורף).
+4. ההודעה נוצרת אוטומטית ומוצגת בתצוגה מקדימה בסגנון וואטסאפ; כפתור
+   "העתק לוואטסאפ" מעתיק אותה ללוח.
+5. כל ההגדרות נשמרות אוטומטית ב-localStorage של הדפדפן ונטענות מחדש
+   בפעם הבאה.
 
-| File/folder | Role |
-|---|---|
-| `index.html` | Page structure; loads `src/app.js` as an ES module |
-| `style.css` | Styling (gold/cream color theme) |
-| `shabbat_times.csv` | Candle-lighting/havdalah times per parasha (columns: `parasha,candle,havdalah,mevorchim,is_dst`) |
-| `src/` | All logic, split into modules by responsibility (pure calculation / CSV / storage / DOM) — see [spec/architecture](spec/architecture/) |
-| `tests/` | Pure unit tests (Node's built-in test runner, no external dependency) |
-| `spec/` | Full documentation: what the app does and how the code is built |
+מפרט התנהגות מלא ומדויק נמצא ב-[`spec/functional/`](spec/functional/).
 
-To run the tests: `node --test tests/*.test.mjs` (Node 18+, no `npm install` needed).
+## סטאק טכני
 
-## Spec docs
+- **`index.html` (שלד) + `src/` (ES modules טבעיים) + `style.css`** —
+  בלי build step, בלי bundler, בלי framework. הקוד מפורק למודולים לפי
+  אחריות (חישוב טהור / CSV / אחסון / DOM), לפי עקרונות SOLID — מבנה
+  מלא ב-[`spec/architecture/`](spec/architecture/).
+- `shabbat_times.csv` — מקור הנתונים היחיד (תלוי-שנה).
+- Netlify לאחסון/פריסה, GitHub לניהול קוד.
 
-Full functional and architecture documentation lives under [`spec/`](spec/) — start at [spec/README.md](spec/README.md).
+## בדיקות
 
-## Updating the yearly times
+`tests/` מכיל בדיקות יחידה טהורות לכל שכבת הלוגיקה (Node test runner
+מובנה, בלי תלות חיצונית):
 
-`shabbat_times.csv` is year-dependent data. It needs to be updated every Hebrew year according to the calendar and Giv'at HaRoe's actual candle-lighting/havdalah times (the `is_dst` column marks whether the Shabbat falls in DST, `mevorchim` whether it's Shabbat Mevorchim). Full details: [spec/functional/02-template-editing-and-persistence.md](spec/functional/02-template-editing-and-persistence.md).
+```
+node --test tests/*.test.mjs
+```
 
-## Deployment
+## עדכון זמנים לשנה חדשה
 
-Pure static site, native ES modules — the whole project folder can be deployed as-is to any static hosting service (Netlify, GitHub Pages, etc.).
+`shabbat_times.csv` הוא נתון תלוי-שנה. יש לעדכן אותו מדי שנה בהתאם
+ללוח השנה העברי ולזמני הדלקת נרות/הבדלה בפועל של גבעת הרואה (עמודת
+`is_dst` מציינת אם השבת חלה בשעון קיץ, ו-`mevorchim` אם היא שבת
+מברכים). פירוט מלא:
+[spec/functional/02-template-editing-and-persistence.md](spec/functional/02-template-editing-and-persistence.md).
+
+## פריסה
+
+אתר סטטי טהור — ניתן לפרוס כל תיקיית הפרויקט כמות שהיא בכל שירות
+אחסון סטטי (Netlify, GitHub Pages וכו').
+
+## הערה על שפה בקוד
+
+הממשק, ההודעות שהאפליקציה מייצרת, ונתוני ה-CSV — בעברית (קהל היעד).
+הערות הקוד ומסמכי `spec/` — באנגלית, כמו בפרויקט האחות `calanderApp`.
+פירוט מלא ב-[`CLAUDE.md`](CLAUDE.md).
+
+## יצירת קשר
+
+`shlomog12@gmail.com`

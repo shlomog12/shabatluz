@@ -1,4 +1,4 @@
-# Spec — לו"ז שבת (shabatluz)
+# Spec — Shabbat Schedule Generator (shabatluz)
 
 Full documentation of the app: **what** it does (functional spec) and
 **how** the code is built (architecture spec). These documents describe
