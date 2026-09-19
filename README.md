@@ -12,18 +12,25 @@
 
 ## מבנה הפרויקט
 
-| קובץ | תפקיד |
+| קובץ/תיקייה | תפקיד |
 |---|---|
-| `index.html` | מבנה הדף |
+| `index.html` | מבנה הדף; טוען את `src/app.js` כ-ES module |
 | `style.css` | עיצוב (ערכת צבעים זהב/קרם) |
-| `config.js` | קבועים: מפתח cache, ערכי ברירת מחדל, רשימת שורות הטמפלט |
-| `index.js` | לוגיקה: טעינת CSV, חישוב זמנים, יצירת הודעה, שמירה ל-cache |
 | `shabbat_times.csv` | זמני הדלקת נרות/הבדלה לכל פרשה (עמודות: `parasha,candle,havdalah,mevorchim,is_dst`) |
+| `src/` | כל הלוגיקה, מפורקת למודולים לפי אחריות (חישוב טהור / CSV / אחסון / DOM) — פירוט מלא ב-[spec/architecture](spec/architecture/) |
+| `tests/` | בדיקות יחידה טהורות (Node test runner מובנה, ללא תלות חיצונית) |
+| `spec/` | תיעוד מלא: מה האפליקציה עושה ואיך הקוד בנוי |
+
+להרצת הבדיקות: `node --test tests/*.test.mjs` (Node 18+, בלי `npm install`).
+
+## מסמכי Spec
+
+תיעוד פונקציונלי וארכיטקטוני מלא נמצא ב-[`spec/`](spec/) — התחילו מ-[spec/README.md](spec/README.md).
 
 ## עדכון זמנים לשנה חדשה
 
-`shabbat_times.csv` הוא נתון תלוי-שנה. יש לעדכן אותו מדי שנה בהתאם ללוח השנה העברי ולזמני הדלקת נרות/הבדלה של גבעת הרואה (עמודת `is_dst` מציינת אם השבת חלה בשעון קיץ, ו-`mevorchim` אם היא שבת מברכים).
+`shabbat_times.csv` הוא נתון תלוי-שנה. יש לעדכן אותו מדי שנה בהתאם ללוח השנה העברי ולזמני הדלקת נרות/הבדלה של גבעת הרואה (עמודת `is_dst` מציינת אם השבת חלה בשעון קיץ, ו-`mevorchim` אם היא שבת מברכים). פירוט מלא: [spec/functional/02-template-editing-and-persistence.md](spec/functional/02-template-editing-and-persistence.md).
 
 ## פריסה (deploy)
 
-אתר סטטי טהור — ניתן לפרוס כל תיקיית הפרויקט כמות שהיא בכל שירות אחסון סטטי (Netlify, GitHub Pages וכו').
+אתר סטטי טהור, ES modules טבעיים — ניתן לפרוס כל תיקיית הפרויקט כמות שהיא בכל שירות אחסון סטטי (Netlify, GitHub Pages וכו').
