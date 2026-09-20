@@ -262,6 +262,12 @@ body {
     color: var(--ink);
     outline: none;
     transition: border-color 0.2s;
+    box-sizing: border-box;
+}
+
+.tmpl-ctrl input[type="time"] {
+    -webkit-appearance: none;
+    appearance: none;
 }
 
 .tmpl-ctrl input[type="number"] {
@@ -271,6 +277,12 @@ body {
 .tmpl-ctrl input:focus,
 .tmpl-ctrl select:focus {
     border-color: var(--gold);
+}
+
+.tmpl-ctrl input[type="time"]::-webkit-calendar-picker-indicator {
+    filter: invert(58%) sepia(53%) saturate(496%) hue-rotate(6deg) brightness(94%) contrast(90%);
+    opacity: 0.8;
+    cursor: pointer;
 }
 
 .tmpl-ctrl span {
@@ -320,16 +332,29 @@ body {
     padding: 9px 12px;
     font-family: 'Heebo', sans-serif;
     font-size: 14px;
+    line-height: 1.4;
     color: var(--ink);
     outline: none;
     transition: border-color 0.2s;
     direction: rtl;
     width: 100%;
+    box-sizing: border-box;
+}
+
+.field input[type="time"] {
+    -webkit-appearance: none;
+    appearance: none;
 }
 
 .field select:focus,
 .field input:focus {
     border-color: var(--gold);
+}
+
+.field input[type="time"]::-webkit-calendar-picker-indicator {
+    filter: invert(58%) sepia(53%) saturate(496%) hue-rotate(6deg) brightness(94%) contrast(90%);
+    opacity: 0.8;
+    cursor: pointer;
 }
 
 /* ============================================================
