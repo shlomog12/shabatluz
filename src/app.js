@@ -3,6 +3,7 @@ import { loadParashaRecords } from './csv/parashaRepository.js';
 import { buildSchedule } from './domain/scheduleGenerator.js';
 import { suggestWeekdayMincha } from './domain/minchaSuggestion.js';
 import { readFormState } from './ui/formBinding.js';
+import { initTimeInputs } from './ui/timeInput.js';
 import { toWhatsAppHtml } from './utils/format.js';
 import { showSchedulePreview, wireCopyButton } from './ui/preview.js';
 import {
@@ -94,6 +95,8 @@ function handleResetTemplate() {
 }
 
 function bindEvents() {
+  initTimeInputs();
+
   document.getElementById('parasha')?.addEventListener('change', () => {
     updateWeekdayMinchaSuggestion();
     generateAndPersist();
@@ -115,7 +118,7 @@ function bindEvents() {
 
   // Every other field in the "edit template" panel (text/number/time/select) just regenerates
   document.querySelectorAll(
-    '#settings-panel input[type="text"], #settings-panel input[type="number"], #settings-panel input[type="time"]'
+    '#settings-panel input[type="text"], #settings-panel input[type="number"]'
   ).forEach(el => el.addEventListener('input', generateAndPersist));
   document.querySelectorAll('#settings-panel select').forEach(el => el.addEventListener('change', generateAndPersist));
 

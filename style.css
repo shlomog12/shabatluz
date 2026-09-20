@@ -250,7 +250,7 @@ body {
     white-space: nowrap;
 }
 
-.tmpl-ctrl input[type="time"],
+.tmpl-ctrl .time-input,
 .tmpl-ctrl input[type="number"],
 .tmpl-ctrl select {
     background: var(--bg);
@@ -266,6 +266,12 @@ body {
 
 .tmpl-ctrl input[type="number"] {
     width: 54px;
+}
+
+.tmpl-ctrl .time-input {
+    width: 60px;
+    text-align: center;
+    direction: ltr;
 }
 
 .tmpl-ctrl input:focus,
@@ -313,7 +319,7 @@ body {
 }
 
 .field select,
-.field input[type="time"] {
+.field .time-input {
     background: var(--bg);
     border: 1.5px solid var(--border);
     border-radius: 8px;
@@ -325,6 +331,11 @@ body {
     transition: border-color 0.2s;
     direction: rtl;
     width: 100%;
+}
+
+.field .time-input {
+    direction: ltr;
+    text-align: right;
 }
 
 .field select:focus,
