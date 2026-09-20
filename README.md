@@ -4,7 +4,7 @@
 מוכנה להדבקה בוואטסאפ, על בסיס זמני הדלקת נרות/הבדלה מקובץ CSV. נבנה
 עבור קהילת גבעת הרואה — ממשק האפליקציה וההודעות שהיא מייצרת בעברית.
 
-🔗 **אתר חי**: https://shabatluz.netlify.app
+🔗 **אתר חי**: https://shabatluz.netlify.app · https://shlomog12.github.io/shabatluz/
 
 ## שימוש
 
